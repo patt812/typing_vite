@@ -66,4 +66,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Sentence::class);
     }
+
+    public function randomSentences($num): Collection
+    {
+        return $this->sentences()->inRandomOrder()
+            ->where('user_id', Auth::id())->limit($num)->get();
+    }
 }
