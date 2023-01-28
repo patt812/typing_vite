@@ -30,14 +30,11 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('/dashboard', [TypingController::class, 'show'])->name('dashboard');
 
     Route::get('/sentence', [TypingController::class, 'showSentence'])->name('sentence');
     Route::get('/sentences', [TypingController::class, 'getSentences'])->name('sentences');
     Route::put('/sentence/store', [TypingController::class, 'storeSentence'])->name('sentence.store');
     Route::put('/sentence/update', [TypingController::class, 'updateSentence'])->name('sentence.update');
     Route::delete('/sentence/delete', [TypingController::class, 'deleteSentence'])->name('sentence.delete');
-
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
 });
