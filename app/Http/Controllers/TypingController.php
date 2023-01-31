@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sentence;
+use App\Models\SettingPreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +14,7 @@ class TypingController extends Controller
 {
     public function show(Request $request)
     {
-        $sentences = Auth::user()->sentences;
+        $sentences = Auth::user()->prepareSentences();
 
         return Inertia::render('Dashboard', [
             'sentences' => $sentences,
@@ -32,11 +33,21 @@ class TypingController extends Controller
         ]);
     }
 
+    public function showPreference(Request $request)
+    {
+        $sentences = Auth::user()->sentences;
+        $flush_message = $request->session()->get('flush_message');
+
+        return Inertia::render('Preference/Show', [
+            'sentences' => $sentences,
+            'status' => $flush_message
+        ]);
+    }
+
     public function getSentences(Request $request): Response
     {
         return Inertia::render('Dashboard', [
-            // 'sentences' =>  Auth::user()->randomSentences($request->num)
-            'sentences' =>  fn () => Auth::user()->randomSentences($request->num),
+            'sentences' =>  fn () => Auth::user()->prepareSentences(),
             'filled' => fn () => true,
         ]);
     }
@@ -83,4 +94,23 @@ class TypingController extends Controller
         session()->flash('flush_message', '削除しました。');
     }
 
+
+    public function storePreference(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'sentences' => ['required', 'numeric'],
+            'is_random' => ['required'],
+        ]);
+        $validator->validate();
+
+        SettingPreference::updateOrInsert(
+            ['setting_id' => Auth::user()->settings->id],
+            [
+                'is_random' => $request->is_random,
+                'sentences' => $request->sentences
+            ]
+        );
+
+        session()->flash('flush_message', '更新しました。');
+    }
 }

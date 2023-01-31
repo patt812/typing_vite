@@ -37,4 +37,7 @@ Route::middleware([
     Route::put('/sentence/store', [TypingController::class, 'storeSentence'])->name('sentence.store');
     Route::put('/sentence/update', [TypingController::class, 'updateSentence'])->name('sentence.update');
     Route::delete('/sentence/delete', [TypingController::class, 'deleteSentence'])->name('sentence.delete');
+
+    Route::get('/preference', [TypingController::class, 'showPreference'])->name('preference');
+    Route::put('/preference/store', [TypingController::class, 'storePreference'])->name('preference.store');
 });

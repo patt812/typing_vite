@@ -53,6 +53,10 @@ const logout = () => {
                                     測定
                                 </NavLink>
 
+                                <NavLink :href="route('preference')" :active="route().current('preference')">
+                                    出題
+                                </NavLink>
+
                                 <NavLink :href="route('sentence')" :active="route().current('sentence')">
                                     文章
                                 </NavLink>
