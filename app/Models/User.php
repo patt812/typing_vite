@@ -62,14 +62,31 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile_photo_url',
     ];
 
+    public function settings()
+    {
+        return $this->hasOne(Setting::class);
+    }
+
     public function sentences(): HasMany
     {
         return $this->hasMany(Sentence::class);
     }
 
-    public function randomSentences($num): Collection
+    /**
+     * Play用の文章を取得する
+     *
+     * @return Collection
+     */
+    public function prepareSentences(): Collection
     {
-        return $this->sentences()->inRandomOrder()
-            ->where('user_id', Auth::id())->limit($num)->get();
+        $user = Auth::user();
+        $settings_limit = $user->settings->setting_preferences->sentences;
+        $is_random = $user->settings->setting_preferences->is_random;
+
+        $query = $this->sentences();
+        if ($is_random) {
+            $query->inRandomOrder();
+        }
+        return $query->where('user_id', $user->id)->limit($settings_limit)->get();
     }
 }
