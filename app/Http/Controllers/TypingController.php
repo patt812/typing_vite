@@ -40,7 +40,6 @@ class TypingController extends Controller
 
         return Inertia::render('Preference/Show', [
             'sentences' => $sentences,
-            'status' => $flush_message
         ]);
     }
 
@@ -111,6 +110,33 @@ class TypingController extends Controller
             ]
         );
 
-        session()->flash('flush_message', '更新しました。');
+        session()->flash('message', '更新しました。');
+    }
+
+    public function storeSentencePreference(Request $request)
+    {
+        $selected = [];
+        $unselected = [];
+
+        foreach ($request->sentence as $sentence) {
+            if ($sentence['is_selected']) {
+                $selected[] = $sentence['id'];
+            } else {
+                $unselected[] = $sentence['id'];
+            }
+        }
+
+        Sentence::whereIn('id', $selected)->where('user_id', Auth::id())
+            ->update([
+                'is_selected' => 1,
+                'updated_at' => now()
+            ]);
+        Sentence::whereIn('id', $unselected)->where('user_id', Auth::id())
+            ->update([
+                'is_selected' => 0,
+                'updated_at' => now()
+            ]);
+
+        session()->flash('message', '更新しました。');
     }
 }

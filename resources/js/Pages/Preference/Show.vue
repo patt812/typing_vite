@@ -20,10 +20,29 @@ const props = defineProps({
 
 const form = useForm(user.settings.setting_preferences);
 
-const flush_message = computed(() => props.status);
+const error = ref('');
+
+const isNoSentenceSelected = computed(() => {
+    return props.sentences.every(s => !s.is_selected)
+});
 
 const store = () => {
     form.put(route('preference.store'));
+};
+
+const storeSentence = () => {
+    error.value = ''
+    usePage().props.flash.message = '';
+
+    if (isNoSentenceSelected.value) {
+        return error.value = '文章は１つ以上選択してください'
+    }
+    const form = useForm({
+        'sentence': props.sentences
+    });
+    form.put(route('preference.sentence.store'), {
+        only: ['sentences', 'flash']
+    });
 };
 
 </script>
@@ -34,8 +53,13 @@ const store = () => {
         <Head title="出題設定" />
 
         <div>
-            <!-- <SentenceList :sentences="sentences" /> -->
+            <div v-if="$page.props.flash.message" class="font-medium text-sm text-green-600">
+                {{ $page.props.flash.message }}
+            </div>
 
+            <SentenceList :sentences="sentences" from="preference" @store="storeSentence" />
+
+            <InputError :message="error" />
             <form @submit.prevent="store">
 
                 <div class="flex">
