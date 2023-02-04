@@ -18,7 +18,6 @@ const props = defineProps({
 const sentence = ref(null);
 const flush_message = computed(() => props.status);
 
-
 onMounted(() => {
     sentence.value.focus();
 });
@@ -74,7 +73,7 @@ const fill = (sentence) => {
         <Head title="文章管理" />
 
         <div>
-            <SentenceList :sentences="sentences" @fill="fill" />
+            <SentenceList :sentences="sentences" :from="'sentence'" @fill="fill" />
 
             <form @submit.prevent="store">
                 <div>

@@ -40,4 +40,5 @@ Route::middleware([
 
     Route::get('/preference', [TypingController::class, 'showPreference'])->name('preference');
     Route::put('/preference/store', [TypingController::class, 'storePreference'])->name('preference.store');
+    Route::put('/preference/store/sentence', [TypingController::class, 'storeSentencePreference'])->name('preference.sentence.store');
 });

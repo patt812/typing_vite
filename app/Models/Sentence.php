@@ -10,4 +10,8 @@ class Sentence extends Model
     use HasFactory;
 
     protected $fillable = ['user_id','sentence', 'kana'];
+
+    protected $casts = [
+        'is_selected' => 'bool'
+    ];
 }

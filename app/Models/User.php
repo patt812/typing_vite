@@ -77,7 +77,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return Collection
      */
-    public function prepareSentences(): Collection
+    public function prepareSentences()
     {
         $user = Auth::user();
         $settings_limit = $user->settings->setting_preferences->sentences;
@@ -87,6 +87,15 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($is_random) {
             $query->inRandomOrder();
         }
-        return $query->where('user_id', $user->id)->limit($settings_limit)->get();
+
+        $sentences = $query->where('user_id', $user->id)->where('is_selected', 1)
+            ->limit($settings_limit)->get();
+
+        // ヒットが出題数より足りない場合は補填
+        while (count($sentences) < $settings_limit) {
+            $sentences[] = $sentences[rand(0, (count($sentences) - 1))];
+        }
+
+        return $sentences;
     }
 }
