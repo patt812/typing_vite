@@ -14,4 +14,8 @@ class Sentence extends Model
     protected $casts = [
         'is_selected' => 'bool'
     ];
+
+    public function stat() {
+        return $this->hasOne(Stats::class);
+    }
 }

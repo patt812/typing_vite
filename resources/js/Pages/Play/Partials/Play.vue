@@ -4,6 +4,7 @@ import Typing from '@/Typing/typing.js'
 import { router } from '@inertiajs/core';
 import { ref } from '@vue/reactivity';
 import { onMounted, onUnmounted, watch } from '@vue/runtime-core';
+import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
     sentences: Array,
@@ -26,11 +27,12 @@ const getSentence = (counts) => {
     typing.value.prepare(props.sentences);
 };
 
-// watch(() => typing.value.isPlayable, (isPlayable) => {
-//     if (!isPlayable) {
-//         getSentence(0);
-//     }
-// });
+watch(() => typing.value.isFinished, (isFinished) => {
+    if (isFinished) {
+        const result = typing.value.result;
+        Inertia.post(route('play.store'), { result });
+    }
+});
 
 onMounted(() => {
     console.log(props.filled);
