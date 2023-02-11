@@ -26,6 +26,7 @@ export default class Game {
       this.sentence.kanasDisplay.push(datum.kana);
       this.sentence.sentences.push(datum.sentence);
       this.sentence.ids.push(datum.id);
+      this.result.ids.push(datum.id);
     }
 
     await this.sentence.setRomas();
@@ -70,6 +71,8 @@ export default class Game {
       && this.typing.judge.goNext) {
 
       this.typing.statistics.stopTimer();
+      this.typing.sentence.current++;
+      this.typing.updateResult();
       this.typing.isStarted = false;
       this.typing.isPlayable = false;
       this.typing.isFinished = true;
@@ -102,12 +105,14 @@ export default class Game {
     this.judge.goNext = false;
     this.sentencesDone++;
     this.sentence.current++;
+    this.updateResult();
     this.statistics.next();
     this.sentence.displayRoma = this.sentence.joinRoma();
   }
 
+
   updateResult(opt_escaped = false) {
-    const currentID = this.sentence.ids[this.sentence.current];
+    const currentID = this.sentence.ids[this.sentence.current - 1];
     if (!opt_escaped) {
       this.result.update(
         currentID,
@@ -116,7 +121,6 @@ export default class Game {
         this.statistics.accuracy,
       );
     }
-    this.result.waiting.add(currentID);
   }
 
   async countdown(sec) {

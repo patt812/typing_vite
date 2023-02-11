@@ -46,7 +46,7 @@ export default class Result {
     if (this.mins[i] === null || this.mins[i] > wpm) {
       this.mins[i] = wpm;
     }
-    if (this.missStreaks[i] < missStreak) {
+     if (this.missStreaks[i] == null || this.missStreaks[i] < missStreak) {
       this.missStreaks[i] = missStreak;
     }
     if (Math.floor(acc) === 100) {
