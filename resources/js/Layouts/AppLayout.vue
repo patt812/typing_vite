@@ -60,6 +60,10 @@ const logout = () => {
                                 <NavLink :href="route('sentence')" :active="route().current('sentence')">
                                     文章
                                 </NavLink>
+
+                                <NavLink :href="route('stats')" :active="route().current('stats')">
+                                    統計
+                                </NavLink>
                             </div>
                         </div>
 
