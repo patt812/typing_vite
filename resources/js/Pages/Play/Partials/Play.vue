@@ -13,6 +13,17 @@ const props = defineProps({
 
 const typing = ref(new Typing());
 
+const stat = ref(null);
+
+const getStats = (i) => {
+    const stats = {
+        average: typing.value.result.accuracies[i],
+        wpm: typing.value.result.avarages[i],
+        missStreak: typing.value.result.missStreaks[i],
+    }
+    stat.value = stats;
+};
+
 const getSentence = (counts) => {
     router.visit(route('sentences', { num: 3 }), {
         only: ['sentences', 'filled'],
@@ -75,7 +86,7 @@ onUnmounted(() => {
             <div>{{ typing.countDown }}</div>
         </div>
 
-        <div v-show="!typing.isStarted && typing.isFinished">
+        <div v-if="!typing.isStarted && typing.isFinished">
             <div>
                 <div class="flex">
                     <div>正答率</div>
@@ -101,6 +112,17 @@ onUnmounted(() => {
                     <div>最大連続ミス数</div>
                     <div>{{ typing.statistics.maxMissStreak }}</div>
                 </div>
+            </div>
+
+            <div v-for="i of typing.sentence.ids.length" :key="i" class="cursor-pointer">
+                <div @click="getStats(i)">{{ typing.sentence.sentences[i] }}</div>
+                <div @click="getStats(i)">{{ typing.sentence.kanasDisplay[i] }}</div>
+            </div>
+
+            <div v-if="stat">
+                <div>WPM：{{ stat.wpm }}</div>
+                <div>正答率：{{ stat.average }}%</div>
+                <div>連続ミス数：{{ stat.missStreak }}</div>
             </div>
 
             <button @click="getSentence(0)">もう一度</button>
