@@ -45,6 +45,15 @@ class TypingController extends Controller
         ]);
     }
 
+    public function showStats()
+    {
+        $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
+
+        return Inertia::render('Stats/Show', [
+            'sentences' => $sentences,
+        ]);
+    }
+
     public function getSentences(Request $request): Response
     {
         return Inertia::render('Dashboard', [
@@ -144,6 +153,22 @@ class TypingController extends Controller
     {
         Sentence::find($request->id)->delete();
         session()->flash('flush_message', '削除しました。');
+    }
+
+    public function resetStat(Request $request, Sentence $sentence)
+    {
+        $deleted = DB::transaction(function () use ($request, $sentence) {
+            if ($request->delete_sentence) {
+                $deleted = $sentence->delete();
+            } else {
+                $deleted = $sentence->stat->delete();
+            }
+            return $deleted;
+        });
+
+        if ($deleted) {
+            session()->flash('message', '削除しました。');
+        }
     }
 
 
