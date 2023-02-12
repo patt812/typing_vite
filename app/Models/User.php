@@ -62,6 +62,24 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile_photo_url',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $settings = $user->settings()->create([
+                'user_id' => $user->id,
+            ]);
+            $user->settings->setting_preferences()->create([
+                'setting_id' => $settings->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            Sentence::factory(5)->create(['user_id' => $user->id]);
+        });
+    }
+
     public function settings()
     {
         return $this->hasOne(Setting::class);
