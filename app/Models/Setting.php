@@ -22,4 +22,9 @@ class Setting extends Model
     {
         return $this->hasOne(SettingPreference::class, 'setting_id', 'id');
     }
+
+    public function setting_plays()
+    {
+        return $this->hasOne(SettingPlay::class, 'setting_id', 'id');
+    }
 }

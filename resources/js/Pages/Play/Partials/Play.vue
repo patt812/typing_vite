@@ -5,13 +5,21 @@ import { router } from '@inertiajs/core';
 import { ref } from '@vue/reactivity';
 import { onMounted, onUnmounted, watch } from '@vue/runtime-core';
 import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
     sentences: Array,
-    filled: Boolean
+    filled: Boolean,
+    volume: Number,
 });
 
-const typing = ref(new Typing());
+const settings = usePage().props.user.settings.setting_plays;
+
+const typing = ref(new Typing({
+    volume: props.volume,
+    use_type_sound: settings.use_type_sound,
+    use_beep_sound: settings.use_beep_sound
+}));
 
 const stat = ref(null);
 
@@ -45,8 +53,11 @@ watch(() => typing.value.isFinished, (isFinished) => {
     }
 });
 
+watch(() => props.volume, (volume) => {
+    typing.value.changeVolume(volume);
+})
+
 onMounted(() => {
-    console.log(props.filled);
     if (!props.sentences || props.filled) return;
     if (props.sentences && props.sentences.length) {
         typing.value.prepare(props.sentences);
@@ -58,7 +69,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-
+    typing.value.reset();
 })
 </script>
 

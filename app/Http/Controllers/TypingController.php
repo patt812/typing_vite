@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sentence;
+use App\Models\SettingPlay;
 use App\Models\SettingPreference;
 use App\Models\Stats;
 use Illuminate\Http\Request;
@@ -215,6 +216,14 @@ class TypingController extends Controller
                 'updated_at' => now()
             ]);
 
+        session()->flash('message', '更新しました。');
+    }
+
+    public function setSound(Request $request, SettingPlay $setting_play)
+    {
+        DB::transaction(function () use ($request, $setting_play) {
+            $setting_play->fill($request->all())->save();
+        });
         session()->flash('message', '更新しました。');
     }
 }

@@ -5,13 +5,26 @@ import Result from './result.js';
 
 export default class Game {
 
-  constructor(countdown = 0) {
+  constructor(settings = {}) {
+    this.countdownSec = settings.countdown ? settings.countdown : 0;
+    console.log(settings);
+    this.volume = settings.volume ? settings.volume : 0.5;
+    this.use_type_sound = settings.use_type_sound ? settings.use_type_sound : false;
+    this.use_beep_sound = settings.use_beep_sound ? settings.use_beep_sound : false;
+    if (this.use_type_sound) {
+        this.typeSound = new Audio(import.meta.env.VITE_TYPING_SOUND_TYPE);
+        this.typeSound.volume = this.volume;
+    }
+    if (this.use_beep_sound) {
+        this.beepSound = new Audio(import.meta.env.VITE_TYPING_SOUND_BEEP);
+        this.beepSound.volume = this.volume;
+    }
+
     this.DEFAULT_GAME_DIALOG = "スペースキーを押してスタート";
     this.isPlayable = false;
     this.isStarted = false;
     this.isFinished = false;
     this.played = 0;
-    this.countdownSec = countdown;
     this.dialog = "";
     this.sentencesDone = 1;
     this.judge = new Judge();
@@ -56,7 +69,9 @@ export default class Game {
   }
 
   observe(event) {
-    if (!this.typing.isStarted) return;
+    if (!this.typing.isStarted || event.metaKey || event.ctrlKey || event.key == "F5") {
+        return;
+    }
     if (event.key === "Escape") {
       this.typing.reset();
       return;
@@ -64,7 +79,15 @@ export default class Game {
 
     this.typing.performJudge(event.key);
     if (!this.typing.judge.isCorrect) {
+        if (this.typing.use_beep_sound) {
+            this.typing.beepSound.load();
+            this.typing.beepSound.play();
+        }
       return;
+    }
+    if (this.typing.use_type_sound) {
+        this.typing.typeSound.load();
+        this.typing.typeSound.play();
     }
 
     if (this.typing.sentence.sentences.length == this.typing.sentence.current + 1
@@ -134,5 +157,11 @@ export default class Game {
     const totalInputs = this.statistics.totalCorrect +
       this.statistics.totalMistake;
     return totalInputs == 0 && input == 'Space';
+  }
+
+  changeVolume(volume) {
+    this.volume = volume;
+    this.typeSound.volume = this.volume;
+    this.beepSound.volume = this.volume;
   }
 }

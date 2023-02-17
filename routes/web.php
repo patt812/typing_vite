@@ -45,4 +45,6 @@ Route::middleware([
 
     Route::get('/stats', [TypingController::class, 'showStats'])->name('stats');
     Route::delete('/stats/reset/{sentence}', [TypingController::class, 'resetStat'])->name('stats.reset');
+
+    Route::put('/settings/sound/{setting_play}', [TypingController::class,'setSound'])->name('settings.sound');
 });

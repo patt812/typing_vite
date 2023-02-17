@@ -75,6 +75,11 @@ class User extends Authenticatable implements MustVerifyEmail
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+            $user->settings->setting_plays()->create([
+                'setting_id' => $settings->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             Sentence::factory(5)->create(['user_id' => $user->id]);
         });
