@@ -67,6 +67,9 @@ class User extends Authenticatable implements MustVerifyEmail
         parent::boot();
 
         static::created(function ($user) {
+            $user->total_stats()->create([
+                'user_id' => $user->id,
+            ]);
             $settings = $user->settings()->create([
                 'user_id' => $user->id,
             ]);
@@ -93,6 +96,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sentences(): HasMany
     {
         return $this->hasMany(Sentence::class);
+    }
+
+    public function total_stats()
+    {
+        return $this->hasOne(UserStat::class);
     }
 
     /**
