@@ -18,6 +18,8 @@ const selected = ref(null);
 
 const resetConfirm = ref(false);
 
+const resetAllConfirm = ref(false);
+
 const deleteWithSentence = ref(false);
 
 const updateForm = useForm({
@@ -25,6 +27,10 @@ const updateForm = useForm({
     sentence: '',
     kana: ''
 });
+
+const resetAllForm = useForm({});
+
+const statsCount = computed(() => props.sentences.filter(s => s.stat !== null).length);
 
 const formatSeconds = (seconds) => {
     const hours = (seconds / 3600) | 0;
@@ -41,6 +47,14 @@ const reset = () => {
             selected.value = null;
             resetConfirm.value = false;
             deleteWithSentence.value = false;
+        }
+    });
+};
+
+const resetAll = () => {
+    resetAllForm.delete(route('stats.reset.all'), {
+        onSuccess: () => {
+            resetAllConfirm.value = false;
         }
     });
 };
@@ -89,6 +103,7 @@ const fill = (sentence) => {
             <div>打鍵数：{{ userStats.typed }}</div>
             <div>プレイ回数：{{ userStats.played }}</div>
             <div>プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
+            <DangerButton @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
         </div>
 
         <Modal :show="resetConfirm" @close="resetConfirm = false">
@@ -102,6 +117,15 @@ const fill = (sentence) => {
                 </div>
                 <DangerButton @click="reset">リセット</DangerButton>
             </div>
+        </Modal>
+
+        <Modal :show="resetAllConfirm" @close="resetAllConfirm = false">
+            <div>
+                <span v-if="statsCount">{{ statsCount }}件の統計と</span>
+                <span>総合の統計をリセットしますか？</span>
+            </div>
+            <div>この操作は元に戻せません。</div>
+            <DangerButton @click="resetAll" :disabled="resetAllForm.processing">リセット</DangerButton>
         </Modal>
     </AppLayout>
 </template>
