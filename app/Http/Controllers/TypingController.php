@@ -38,7 +38,8 @@ class TypingController extends Controller
 
     public function showPreference(Request $request)
     {
-        $sentences = Auth::user()->sentences;
+        $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
+
         $flush_message = $request->session()->get('flush_message');
 
         return Inertia::render('Preference/Show', [
@@ -177,17 +178,38 @@ class TypingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'sentences' => ['required', 'numeric'],
-            'is_random' => ['required'],
+            'prior_no_stats' => ['required'],
+            'is_random' => ['required', 'boolean',],
+            'min_accuracy' => ['nullable', 'numeric'],
+            'max_accuracy' => ['nullable', 'numeric'],
+            'min_wpm' => ['nullable', 'numeric'],
+            'max_wpm' => ['nullable', 'numeric'],
         ]);
         $validator->validate();
 
-        SettingPreference::updateOrInsert(
-            ['setting_id' => Auth::user()->settings->id],
-            [
-                'is_random' => $request->is_random,
-                'sentences' => $request->sentences
-            ]
-        );
+        $update = [
+            'is_random' => $request->is_random,
+            'sentences' => $request->sentences,
+            'limit_wpm' => $request->limit_wpm,
+            'limit_accuracy' => $request->limit_accuracy,
+            'prior_no_stats' => $request->prior_no_stats,
+        ];
+
+        if ($request->limit_wpm) {
+            $update['min_wpm'] = $request->min_wpm;
+            $update['max_wpm'] = $request->max_wpm;
+        }
+        if ($request->limit_accuracy) {
+            $update['min_accuracy'] = $request->min_accuracy;
+            $update['max_accuracy'] = $request->max_accuracy;
+        }
+
+        DB::transaction(function () use ($update) {
+            SettingPreference::updateOrInsert(
+                ['setting_id' => Auth::user()->settings->id],
+                $update
+            );
+        });
 
         session()->flash('message', '更新しました。');
     }
