@@ -213,6 +213,27 @@ class TypingController extends Controller
         }
     }
 
+    public function resetAllStats()
+    {
+        DB::transaction(function () {
+            $user = Auth::user();
+
+            $sentences = Sentence::where('user_id', $user->id)->pluck('id')->toArray();
+            Stats::whereIn('sentence_id', $sentences)->delete();
+
+            $user->total_stats()->update([
+                'played' => 0,
+                'typed' => 0,
+                'accuracy' => 0,
+                'wpm' => 0,
+                'max_wpm' => 0,
+                'played_seconds' => 0,
+            ]);
+        });
+
+        session()->flash('message', '削除しました。');
+    }
+
 
     public function storePreference(Request $request)
     {
