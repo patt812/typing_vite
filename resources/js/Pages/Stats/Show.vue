@@ -11,6 +11,7 @@ import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
 
 const props = defineProps({
     sentences: Array,
+    userStats: Object,
 });
 
 const selected = ref(null);
@@ -24,6 +25,12 @@ const updateForm = useForm({
     sentence: '',
     kana: ''
 });
+
+const formatSeconds = (seconds) => {
+    const hours = (seconds / 3600) | 0;
+    const minutes = ((seconds % 3600) / 60) | 0;
+    return `${hours}:${('00' + minutes).slice(-2)}:${('00' + ((seconds % 60) | 0)).slice(-2)}`;
+}
 
 const reset = () => {
     const form = useForm({
@@ -72,6 +79,16 @@ const fill = (sentence) => {
                     統計はまだありません。
                 </div>
             </div>
+        </div>
+
+        <div>
+            <div>総合統計</div>
+            <div>WPM：{{ userStats.wpm.toFixed(2).replace('.00', '') }}</div>
+            <div>最高WPM：{{ userStats.max_wpm }}</div>
+            <div>正答率：{{ userStats.accuracy.toFixed(2).replace('.00', '') }}%</div>
+            <div>打鍵数：{{ userStats.typed }}</div>
+            <div>プレイ回数：{{ userStats.played }}</div>
+            <div>プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
         </div>
 
         <Modal :show="resetConfirm" @close="resetConfirm = false">

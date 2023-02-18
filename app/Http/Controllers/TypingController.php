@@ -6,6 +6,7 @@ use App\Models\Sentence;
 use App\Models\SettingPlay;
 use App\Models\SettingPreference;
 use App\Models\Stats;
+use App\Models\UserStat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -50,9 +51,11 @@ class TypingController extends Controller
     public function showStats()
     {
         $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
+        $user_stats = UserStat::where('user_id', Auth::id())->first();
 
         return Inertia::render('Stats/Show', [
             'sentences' => $sentences,
+            'userStats' => $user_stats,
         ]);
     }
 
@@ -108,11 +111,28 @@ class TypingController extends Controller
             }
         }
 
-        if (count($inserts)) {
-            DB::transaction(function () use ($inserts) {
-                Stats::insert($inserts);
-            });
-        }
+        $total_stats = $request->stats;
+        DB::transaction(function () use ($inserts, $total_stats, $result) {
+            $user_stats = UserStat::where('user_id', Auth::id())->first();
+            if (!$user_stats->played) {
+                $accuracy = $total_stats['accuracy'];
+                $wpm = $total_stats['totalWPM'];
+            } else {
+                $accuracy = ($user_stats->accuracy + $total_stats['accuracy']) / 2;
+                $wpm = ($user_stats->wpm + $total_stats['totalWPM']) / 2;
+            }
+
+            $user_stats->fill([
+                'played' => $user_stats->played + 1,
+                'typed' => $user_stats->typed + $total_stats['totalCorrect'] + $total_stats['totalMistake'],
+                'accuracy' => $accuracy,
+                'wpm' => $wpm,
+                'max_wpm' => max(array_merge([$user_stats->max_wpm], $result['avarages'])),
+                'played_seconds' => $user_stats->played_seconds + $total_stats['time']
+            ])->save();
+
+            Stats::insert($inserts);
+        });
     }
 
     public function storeSentence(Request $request)

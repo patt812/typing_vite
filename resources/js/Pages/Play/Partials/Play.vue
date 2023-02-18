@@ -49,7 +49,9 @@ const getSentence = (counts) => {
 watch(() => typing.value.isFinished, (isFinished) => {
     if (isFinished) {
         const result = typing.value.result;
-        Inertia.post(route('play.store'), { result });
+        const stats = typing.value.statistics;
+        stats.totalWPM = typing.value.statistics.getTotalWPM();
+        Inertia.post(route('play.store'), { result, stats });
     }
 });
 
