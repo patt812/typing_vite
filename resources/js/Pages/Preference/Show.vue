@@ -5,9 +5,9 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import FlashMessage from '@/Components/FlashMessage.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
-import DangerButton from '@/Components/DangerButton.vue';
 
 import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
 
@@ -53,14 +53,44 @@ const storeSentence = () => {
         <Head title="出題設定" />
 
         <div>
-            <div v-if="$page.props.flash.message" class="font-medium text-sm text-green-600">
-                {{ $page.props.flash.message }}
-            </div>
+            <FlashMessage />
 
             <SentenceList :sentences="sentences" from="preference" @store="storeSentence" />
-
             <InputError :message="error" />
+
             <form @submit.prevent="store">
+
+                <div class="flex">
+                    <Checkbox id="limit_wpm" v-model:checked="form.limit_wpm" />
+                    <InputLabel for="limit_wpm" value="WPMで選ぶ" />
+                </div>
+                <div v-show="form.limit_wpm" class="flex">
+                    <TextInput type="number" v-model="form.min_wpm" />
+                    <span>〜</span>
+                    <TextInput type="number" v-model="form.max_wpm" />
+                </div>
+
+                <div class="flex">
+                    <Checkbox id="limit_accuracy" v-model:checked="form.limit_accuracy" />
+                    <InputLabel for="limit_accuracy" value="正答率で選ぶ" />
+                </div>
+                <div v-show="form.limit_accuracy" class="flex">
+                    <TextInput type="number" v-model="form.min_accuracy" />
+                    <span>〜</span>
+                    <TextInput type="number" v-model="form.max_accuracy" />
+                </div>
+
+                <InputLabel for="prior_no_stats" value="統計がない文章の優先度" />
+                <div class="flex">
+                    <input type="radio" name="prior-type" id="prior-every" v-model="form.prior_no_stats" value="0">
+                    <InputLabel for="prior-every" value="未選択でも優先して出題" />
+
+                    <input type="radio" name="prior-type" id="prior-selected" v-model="form.prior_no_stats" value="1">
+                    <InputLabel for="prior-selected" value="選択された中で優先して出題" />
+
+                    <input type="radio" name="prior-type" id="prior-none" v-model="form.prior_no_stats" value="2">
+                    <InputLabel for="prior-none" value="設定しない" />
+                </div>
 
                 <div class="flex">
                     <Checkbox id="is_random" v-model:checked="form.is_random" />

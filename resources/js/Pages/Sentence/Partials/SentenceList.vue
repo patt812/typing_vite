@@ -12,6 +12,7 @@ import { computed, ref } from 'vue';
 const props = defineProps({
     sentences: Array,
     from: String,
+    customFilter: Object,
 });
 
 const isPreference = ref(props.from == 'preference')
@@ -19,6 +20,8 @@ const isPreference = ref(props.from == 'preference')
 const searchWord = ref('');
 
 const radioDiv = ref(0);
+
+const customFilter = ref({});
 
 const filtered = computed(() => {
     let sentence = props.sentences;

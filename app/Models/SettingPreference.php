@@ -13,6 +13,8 @@ class SettingPreference extends Model
 
     protected $casts = [
         'is_random' => 'boolean',
+        'limit_wpm' => 'boolean',
+        'limit_accuracy' => 'boolean',
     ];
 
     public function settings()

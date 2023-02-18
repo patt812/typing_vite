@@ -103,19 +103,62 @@ class User extends Authenticatable implements MustVerifyEmail
     public function prepareSentences()
     {
         $user = Auth::user();
-        $settings_limit = $user->settings->setting_preferences->sentences;
-        $is_random = $user->settings->setting_preferences->is_random;
+        $settings = $user->settings->setting_preferences;
 
-        $query = $this->sentences();
-        if ($is_random) {
-            $query->inRandomOrder();
+        $query = $this->sentences()->leftJoin('sentence_stats as stats', 'sentences.id', 'sentence_id')
+                ->where('user_id', $user->id);
+
+        // 統計のない文章を出題するか
+        if ($settings->prior_no_stats < 2) {
+            $query->whereNull('stats.id');
+        }
+        if ($settings->prior_no_stats > 0) {
+            $query->where('is_selected', 1);
         }
 
-        $sentences = $query->where('user_id', $user->id)->where('is_selected', 1)
-            ->limit($settings_limit)->get();
+        // 統計の情報で制限するか（統計のない文章を優先する場合は未出題のヒット数が規定の出題数を超えていないこと）
+        if (($settings->prior_no_stats == 2 || ($settings->prior_no_stats < 2 && $query->count() < $settings->sentences))) {
+            $query->orWhere(function ($sub) use ($settings) {
+                if ($settings->limit_wpm) {
+                    if ($settings->min_wpm != null) {
+                        $sub->where('ave_wpm', '>=', $settings->min_wpm);
+                    }
+                    if ($settings->max_wpm != null) {
+                        $sub->where('ave_wpm', '<=', $settings->max_wpm);
+                    }
+                }
+                if ($settings->limit_accuracy) {
+                    if ($settings->min_accuracy != null) {
+                        $sub->where('ave_accuracy', '>=', $settings->min_accuracy);
+                    }
+                    if ($settings->max_accuracy != null) {
+                        $sub->where('ave_accuracy', '<=', $settings->max_accuracy);
+                    }
+                }
+                if ($settings->prior_no_stats > 0) {
+                    $sub->where('is_selected', 1);
+                }
+            });
+        }
+
+        if ($settings->is_random) {
+            $query->inRandomOrder();
+        }
+        $sentences = $query->select('stats.*', 'sentences.*')->limit($settings->sentences)->get();
 
         // ヒットが出題数より足りない場合は補填
-        while (count($sentences) < $settings_limit) {
+        if (!count($sentences)) {
+            $query = $this->sentences()->where('user_id', $user->id);
+            if ($settings->is_random) {
+                $query->inRandomOrder();
+            }
+            $can_select = $query->where('is_selected', 1)->count();
+            if ($can_select) {
+                $query->where('is_selected', 1);
+            }
+            $sentences = $query->select('stats.*', 'sentences.*')->limit($settings->sentences)->get();
+        }
+        while (count($sentences) < $settings->sentences) {
             $sentences[] = $sentences[rand(0, (count($sentences) - 1))];
         }
 
