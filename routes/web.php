@@ -36,6 +36,7 @@ Route::middleware([
     Route::get('/sentence', [TypingController::class, 'showSentence'])->name('sentence');
     Route::get('/sentences', [TypingController::class, 'getSentences'])->name('sentences');
     Route::put('/sentence/store', [TypingController::class, 'storeSentence'])->name('sentence.store');
+    Route::post('/sentences/store', [TypingController::class, 'storeSentences'])->name('sentences.store');
     Route::put('/sentence/update', [TypingController::class, 'updateSentence'])->name('sentence.update');
     Route::delete('/sentence/delete', [TypingController::class, 'deleteSentence'])->name('sentence.delete');
 

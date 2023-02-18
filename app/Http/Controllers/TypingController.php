@@ -133,6 +133,26 @@ class TypingController extends Controller
         session()->flash('flush_message', '登録しました。');
     }
 
+    public function storeSentences(Request $request)
+    {
+        $sentences = $request->sentences;
+
+        $inserts = [];
+        foreach ($sentences as $sentence) {
+            $inserts[] = [
+                'user_id' => Auth::id(),
+                'sentence' => $sentence['sentence'],
+                'kana' => $sentence['kana'],
+            ];
+        }
+
+        DB::transaction(function () use ($inserts) {
+            Sentence::insert($inserts);
+        });
+
+        session()->flash('message', count($sentences) . '件の文章を登録しました。');
+    }
+
     public function updateSentence(Request $request)
     {
         $validator = Validator::make($request->all(), [
