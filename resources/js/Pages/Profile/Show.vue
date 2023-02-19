@@ -30,64 +30,49 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Profile">
+    <AppLayout title="アカウント設定">
 
         <FlashMessage />
 
         <div>
             <ContentFrame>
-                <div>
-                    <div>サウンド設定</div>
-                    <div class="flex">
-                        <Checkbox id="use_type_sound" v-model:checked="form.use_type_sound" />
-                        <InputLabel for="use_type_sound" value="効果音" />
+                <template #title>サウンド設定</template>
+
+                <template #content>
+                    <div>
+                        <div class="flex items-center ml-4 mt-1 mb-2">
+                            <Checkbox id="use_type_sound" v-model:checked="form.use_type_sound" />
+                            <InputLabel for="use_type_sound" class="ml-2" value="タイピング音を鳴らす" />
+                        </div>
+                        <div class="flex items-center ml-4 mb-4">
+                            <Checkbox id="use_beep_sound" v-model:checked="form.use_beep_sound" />
+                            <InputLabel for="use_beep_sound" class="ml-2" value="ミス音を鳴らす" />
+                        </div>
+                        <div class="mb-2">音量</div>
+                        <TextInput type="range" v-model="form.volume" min="0" max="1" step="0.01" />
                     </div>
-                    <div class="flex">
-                        <Checkbox id="use_beep_sound" v-model:checked="form.use_beep_sound" />
-                        <InputLabel for="use_beep_sound" value="ミス音" />
-                    </div>
-                    <div>音量</div>
-                    <TextInput type="range" v-model="form.volume" min="0" max="1" step="0.01" />
-                </div>
-                <PrimaryButton @click="submit">保存</PrimaryButton>
-            </ContentFrame>
-
-            <ContentFrame>
-                <UpdateProfileInformationForm :user="$page.props.user" />
-            </ContentFrame>
-
-            <ContentFrame>
-                <UpdatePasswordForm class="mt-10 sm:mt-0" />
-            </ContentFrame>
-
-            <ContentFrame>
-                <DeleteUserForm class="mt-10 sm:mt-0" />
-            </ContentFrame>
-
-            <div v-if="0" class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-
-                    <SectionBorder />
-                </div>
-
-                <div v-if="$page.props.jetstream.canUpdatePassword">
-
-                    <SectionBorder />
-                </div>
-
-                <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
-                    <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication"
-                        class="mt-10 sm:mt-0" />
-
-                    <SectionBorder />
-                </div>
-
-                <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
-
-                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-                    <SectionBorder />
-
+                    <PrimaryButton class="px-10" @click="submit">保存</PrimaryButton>
                 </template>
+            </ContentFrame>
+
+            <ContentFrame>
+                <template #title>ユーザー情報</template>
+
+                <template #content>
+                    <UpdateProfileInformationForm :user="$page.props.user" />
+                </template>
+            </ContentFrame>
+
+            <ContentFrame>
+                <template #title>パスワード変更</template>
+
+                <template #content>
+                    <UpdatePasswordForm class="mt-10 sm:mt-0" />
+                </template>
+            </ContentFrame>
+
+            <div class="mt-10">
+                <DeleteUserForm />
             </div>
         </div>
     </AppLayout>
