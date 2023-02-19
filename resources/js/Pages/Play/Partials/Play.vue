@@ -6,6 +6,8 @@ import { ref } from '@vue/reactivity';
 import { onMounted, onUnmounted, watch } from '@vue/runtime-core';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/vue3';
+import KeyBoard from '@/Pages/Play/Partials/KeyBoard.vue';
+import { computed } from '@vue/reactivity';
 
 const props = defineProps({
     sentences: Array,
@@ -22,6 +24,12 @@ const typing = ref(new Typing({
 }));
 
 const stat = ref(null);
+
+const correctKey = computed(() => {
+    const yetNotCorrects = typing.value.sentence.displayRoma.slice(typing.value.statistics.correct);
+    if (!yetNotCorrects) return null;
+    return yetNotCorrects[0];
+})
 
 const getStats = (i) => {
     const stats = {
@@ -90,13 +98,15 @@ onUnmounted(() => {
             </div>
             <div>
                 <span style="color: yellowgreen">{{
-                    typing.sentence.displayRoma.substr(0, typing.statistics.correct)
-                }}</span><span>{{ typing.sentence.displayRoma.substr(typing.statistics.correct) }}
+                    typing.sentence.displayRoma.slice(0, typing.statistics.correct)
+                }}</span><span>{{ typing.sentence.displayRoma.slice(typing.statistics.correct) }}
                 </span>
             </div>
             <div>{{ typing.statistics }}</div>
             <div>{{ typing.statistics.time }}</div>
             <div>{{ typing.countDown }}</div>
+
+            <KeyBoard :correct="correctKey" />
         </div>
 
         <div v-if="!typing.isStarted && typing.isFinished">
