@@ -1,5 +1,5 @@
 <script setup>
-import ContentFrame from './ContentFrame.vue';
+import ContentFrame from '@/Components/ContentFrame.vue';
 </script>
 
 <template>
@@ -8,8 +8,10 @@ import ContentFrame from './ContentFrame.vue';
             <slot name="logo" />
         </div>
 
-        <ContentFrame>
-            <slot />
+        <ContentFrame :limit-size="false">
+            <template #content>
+                <slot />
+            </template>
         </ContentFrame>
     </div>
 </template>

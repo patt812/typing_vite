@@ -143,89 +143,94 @@ const fill = (sentence) => {
             <FlashMessage />
 
             <ContentFrame>
-                <SentenceList :sentences="sentences" :from="'sentence'" @fill="fill" />
+                <template #content>
+                    <SentenceList :sentences="sentences" :from="'sentence'" @fill="fill" />
 
-                <form @submit.prevent="store">
-                    <div>
-                        <div class="flex">
-                            <InputLabel for="sentence" value="文章" />
-                            <TextInput id="sentence" ref="sentence" v-model="form.sentence" required />
+                    <form @submit.prevent="store">
+                        <div>
+                            <div class="flex">
+                                <InputLabel for="sentence" value="文章" />
+                                <TextInput id="sentence" ref="sentence" v-model="form.sentence" required />
+                            </div>
+                            <InputError :message="form.errors.sentence" />
+
+                            <div class="flex">
+                                <InputLabel for="kana" value="かな" />
+                                <TextInput id="kana" v-model="form.kana" required />
+                            </div>
+                            <InputError :message="form.errors.kana" />
                         </div>
-                        <InputError :message="form.errors.sentence" />
+
+                        <PrimaryButton :disabled="canStore">登録</PrimaryButton>
+                    </form>
+
+                    <form @submit.prevent="update">
+                        <div>
+                            <div class="flex">
+                                <InputLabel for="sentence" value="文章" />
+                                <TextInput id="sentence" ref="sentence" v-model="updateForm.sentence" required />
+                            </div>
+                            <InputError :message="updateForm.errors.sentence" />
+
+                            <div class="flex">
+                                <InputLabel for="kana" value="かな" />
+                                <TextInput id="kana" v-model="updateForm.kana" required />
+                            </div>
+                            <InputError :message="updateForm.errors.kana" />
+                        </div>
 
                         <div class="flex">
-                            <InputLabel for="kana" value="かな" />
-                            <TextInput id="kana" v-model="form.kana" required />
+                            <PrimaryButton :disabled="canUpdate">更新</PrimaryButton>
+                            <DangerButton @click.prevent="erase" :disabled="canUpdate">削除</DangerButton>
                         </div>
-                        <InputError :message="form.errors.kana" />
-                    </div>
-
-                    <PrimaryButton :disabled="canStore">登録</PrimaryButton>
-                </form>
-
-                <form @submit.prevent="update">
-                    <div>
-                        <div class="flex">
-                            <InputLabel for="sentence" value="文章" />
-                            <TextInput id="sentence" ref="sentence" v-model="updateForm.sentence" required />
-                        </div>
-                        <InputError :message="updateForm.errors.sentence" />
-
-                        <div class="flex">
-                            <InputLabel for="kana" value="かな" />
-                            <TextInput id="kana" v-model="updateForm.kana" required />
-                        </div>
-                        <InputError :message="updateForm.errors.kana" />
-                    </div>
-
-                    <div class="flex">
-                        <PrimaryButton :disabled="canUpdate">更新</PrimaryButton>
-                        <DangerButton @click.prevent="erase" :disabled="canUpdate">削除</DangerButton>
-                    </div>
-                </form>
+                    </form>
+                </template>
             </ContentFrame>
 
             <ContentFrame>
-                <div>一括登録</div>
-                <div>※文章とかなが入力されていない行は登録時に自動削除されます</div>
-                <SecondaryButton @click="appendInserts(1)">+1</SecondaryButton>
-                <SecondaryButton @click="appendInserts(5)">+5</SecondaryButton>
+                <template #title>一括登録</template>
 
-                <form @submit.prevent="">
-                    <table>
-                        <thead>
-                            <th />
-                            <th>文章</th>
-                            <th>かな</th>
-                        </thead>
+                <template #content>
+                    <div>※文章とかなが入力されていない行は登録時に自動削除されます</div>
+                    <SecondaryButton @click="appendInserts(1)">+1</SecondaryButton>
+                    <SecondaryButton @click="appendInserts(5)">+5</SecondaryButton>
 
-                        <tbody>
-                            <tr v-for="(row, index) in inserts" :key="row">
-                                <td>{{ index + 1 }}</td>
-                                <td>
-                                    <TextInput v-model="row.sentence" :disabled="processingBulkStore" />
-                                </td>
-                                <td>
-                                    <TextInput v-model="row.kana" :disabled="processingBulkStore" />
-                                </td>
-                                <td class="cursor-pointer" @click="inserts.splice(index, 0, { ...row })">
-                                    複製
-                                </td>
-                                <td v-if="inserts.length > 1" class="cursor-pointer" @click="inserts.splice(index, 1)">
-                                    削除
-                                </td>
-                                <td>
-                                    <InputError :message="row.error" />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form @submit.prevent="">
+                        <table>
+                            <thead>
+                                <th />
+                                <th>文章</th>
+                                <th>かな</th>
+                            </thead>
 
-                    <InputError :message="updateForm.errors.kana" />
-                    <PrimaryButton type="button" @click="bulkStore" :disabled="processingBulkStore">
-                        登録
-                    </PrimaryButton>
-                </form>
+                            <tbody>
+                                <tr v-for="(row, index) in inserts" :key="row">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>
+                                        <TextInput v-model="row.sentence" :disabled="processingBulkStore" />
+                                    </td>
+                                    <td>
+                                        <TextInput v-model="row.kana" :disabled="processingBulkStore" />
+                                    </td>
+                                    <td class="cursor-pointer" @click="inserts.splice(index, 0, { ...row })">
+                                        複製
+                                    </td>
+                                    <td v-if="inserts.length > 1" class="cursor-pointer" @click="inserts.splice(index, 1)">
+                                        削除
+                                    </td>
+                                    <td>
+                                        <InputError :message="row.error" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <InputError :message="updateForm.errors.kana" />
+                        <PrimaryButton type="button" @click="bulkStore" :disabled="processingBulkStore">
+                            登録
+                        </PrimaryButton>
+                    </form>
+                </template>
             </ContentFrame>
         </div>
     </AppLayout>
