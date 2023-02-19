@@ -11,6 +11,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import FlashMessage from '@/Components/FlashMessage.vue';
+import ContentFrame from '@/Components/ContentFrame.vue';
 
 const props = defineProps({
     sentences: Array,
@@ -141,48 +142,50 @@ const fill = (sentence) => {
         <div>
             <FlashMessage />
 
-            <SentenceList :sentences="sentences" :from="'sentence'" @fill="fill" />
+            <ContentFrame>
+                <SentenceList :sentences="sentences" :from="'sentence'" @fill="fill" />
 
-            <form @submit.prevent="store">
-                <div>
-                    <div class="flex">
-                        <InputLabel for="sentence" value="文章" />
-                        <TextInput id="sentence" ref="sentence" v-model="form.sentence" required />
+                <form @submit.prevent="store">
+                    <div>
+                        <div class="flex">
+                            <InputLabel for="sentence" value="文章" />
+                            <TextInput id="sentence" ref="sentence" v-model="form.sentence" required />
+                        </div>
+                        <InputError :message="form.errors.sentence" />
+
+                        <div class="flex">
+                            <InputLabel for="kana" value="かな" />
+                            <TextInput id="kana" v-model="form.kana" required />
+                        </div>
+                        <InputError :message="form.errors.kana" />
                     </div>
-                    <InputError :message="form.errors.sentence" />
+
+                    <PrimaryButton :disabled="canStore">登録</PrimaryButton>
+                </form>
+
+                <form @submit.prevent="update">
+                    <div>
+                        <div class="flex">
+                            <InputLabel for="sentence" value="文章" />
+                            <TextInput id="sentence" ref="sentence" v-model="updateForm.sentence" required />
+                        </div>
+                        <InputError :message="updateForm.errors.sentence" />
+
+                        <div class="flex">
+                            <InputLabel for="kana" value="かな" />
+                            <TextInput id="kana" v-model="updateForm.kana" required />
+                        </div>
+                        <InputError :message="updateForm.errors.kana" />
+                    </div>
 
                     <div class="flex">
-                        <InputLabel for="kana" value="かな" />
-                        <TextInput id="kana" v-model="form.kana" required />
+                        <PrimaryButton :disabled="canUpdate">更新</PrimaryButton>
+                        <DangerButton @click.prevent="erase" :disabled="canUpdate">削除</DangerButton>
                     </div>
-                    <InputError :message="form.errors.kana" />
-                </div>
+                </form>
+            </ContentFrame>
 
-                <PrimaryButton :disabled="canStore">登録</PrimaryButton>
-            </form>
-
-            <form @submit.prevent="update">
-                <div>
-                    <div class="flex">
-                        <InputLabel for="sentence" value="文章" />
-                        <TextInput id="sentence" ref="sentence" v-model="updateForm.sentence" required />
-                    </div>
-                    <InputError :message="updateForm.errors.sentence" />
-
-                    <div class="flex">
-                        <InputLabel for="kana" value="かな" />
-                        <TextInput id="kana" v-model="updateForm.kana" required />
-                    </div>
-                    <InputError :message="updateForm.errors.kana" />
-                </div>
-
-                <div class="flex">
-                    <PrimaryButton :disabled="canUpdate">更新</PrimaryButton>
-                    <DangerButton @click.prevent="erase" :disabled="canUpdate">削除</DangerButton>
-                </div>
-            </form>
-
-            <div>
+            <ContentFrame>
                 <div>一括登録</div>
                 <div>※文章とかなが入力されていない行は登録時に自動削除されます</div>
                 <SecondaryButton @click="appendInserts(1)">+1</SecondaryButton>
@@ -223,7 +226,7 @@ const fill = (sentence) => {
                         登録
                     </PrimaryButton>
                 </form>
-            </div>
+            </ContentFrame>
         </div>
     </AppLayout>
 </template>
