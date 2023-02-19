@@ -23,5 +23,5 @@ const isMuted = ref(!settings.use_type_sound && !settings.use_beep_sound);
     <div>
         <Play :sentences="sentences" :volume="volume" />
         <TextInput v-if="!isMuted" type="range" v-model="volume" min="0" max="1" step="0.01" />
-</div>
+    </div>
 </template>

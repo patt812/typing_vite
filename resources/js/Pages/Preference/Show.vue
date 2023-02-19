@@ -10,6 +10,7 @@ import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
 import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
+import ContentFrame from '@/Components/ContentFrame.vue';
 
 const user = usePage().props.user;
 
@@ -52,7 +53,7 @@ const storeSentence = () => {
 
         <Head title="出題設定" />
 
-        <div>
+        <ContentFrame>
             <FlashMessage />
 
             <SentenceList :sentences="sentences" from="preference" @store="storeSentence" />
@@ -104,6 +105,6 @@ const storeSentence = () => {
 
                 <PrimaryButton :disabled="form.processing">保存する</PrimaryButton>
             </form>
-        </div>
+        </ContentFrame>
     </AppLayout>
 </template>

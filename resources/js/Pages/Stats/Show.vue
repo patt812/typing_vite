@@ -8,6 +8,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
+import ContentFrame from '@/Components/ContentFrame.vue';
 
 const props = defineProps({
     sentences: Array,
@@ -70,41 +71,43 @@ const fill = (sentence) => {
 
         <Head title="文章管理" />
 
-        <div>
-            <FlashMessage />
+        <ContentFrame>
+            <div>
+                <FlashMessage />
 
-            <SentenceList :sentences="sentences" :from="'stats'" @fill="fill" />
+                <SentenceList :sentences="sentences" :from="'stats'" @fill="fill" />
 
-            <div v-if="selected">
-                <div v-if="selected.stat">
-                    <div>プレイ数：{{ selected.stat.played }}</div>
-                    <div>パーフェクト数：{{ selected.stat.perfect }}</div>
-                    <div>最低WPM：{{ selected.stat.min_wpm }}</div>
-                    <div>最高WPM：{{ selected.stat.max_wpm }}</div>
-                    <div>平均WPM：{{ selected.stat.ave_wpm }}</div>
-                    <div>最低正答率：{{ selected.stat.min_accuracy }}%</div>
-                    <div>最高正答率：{{ selected.stat.max_accuracy }}%</div>
-                    <div>平均正答率：{{ selected.stat.ave_accuracy }}%</div>
-                    <div>最大連続ミス数：{{ selected.stat.max_miss_streak }}</div>
+                <div v-if="selected">
+                    <div v-if="selected.stat">
+                        <div>プレイ数：{{ selected.stat.played }}</div>
+                        <div>パーフェクト数：{{ selected.stat.perfect }}</div>
+                        <div>最低WPM：{{ selected.stat.min_wpm }}</div>
+                        <div>最高WPM：{{ selected.stat.max_wpm }}</div>
+                        <div>平均WPM：{{ selected.stat.ave_wpm }}</div>
+                        <div>最低正答率：{{ selected.stat.min_accuracy }}%</div>
+                        <div>最高正答率：{{ selected.stat.max_accuracy }}%</div>
+                        <div>平均正答率：{{ selected.stat.ave_accuracy }}%</div>
+                        <div>最大連続ミス数：{{ selected.stat.max_miss_streak }}</div>
 
-                    <DangerButton @click="resetConfirm = true">リセットする</DangerButton>
-                </div>
-                <div v-else>
-                    統計はまだありません。
+                        <DangerButton @click="resetConfirm = true">リセットする</DangerButton>
+                    </div>
+                    <div v-else>
+                        統計はまだありません。
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div>
-            <div>総合統計</div>
-            <div>WPM：{{ userStats.wpm.toFixed(2).replace('.00', '') }}</div>
-            <div>最高WPM：{{ userStats.max_wpm }}</div>
-            <div>正答率：{{ userStats.accuracy.toFixed(2).replace('.00', '') }}%</div>
-            <div>打鍵数：{{ userStats.typed }}</div>
-            <div>プレイ回数：{{ userStats.played }}</div>
-            <div>プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
-            <DangerButton @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
-        </div>
+            <div>
+                <div>総合統計</div>
+                <div>WPM：{{ userStats.wpm.toFixed(2).replace('.00', '') }}</div>
+                <div>最高WPM：{{ userStats.max_wpm }}</div>
+                <div>正答率：{{ userStats.accuracy.toFixed(2).replace('.00', '') }}%</div>
+                <div>打鍵数：{{ userStats.typed }}</div>
+                <div>プレイ回数：{{ userStats.played }}</div>
+                <div>プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
+                <DangerButton @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
+            </div>
+        </ContentFrame>
 
         <Modal :show="resetConfirm" @close="resetConfirm = false">
             <div v-if="selected && selected.stat">
