@@ -41,11 +41,11 @@ const submit = () => {
                 <template #content>
                     <div>
                         <div class="flex items-center ml-4 mt-1 mb-2">
-                            <Checkbox id="use_type_sound" v-model:checked="form.use_type_sound" />
+                            <Checkbox id="use_type_sound" v-model:checked="form.use_type_sound" dashed="true" />
                             <InputLabel for="use_type_sound" class="ml-2" value="タイピング音を鳴らす" />
                         </div>
                         <div class="flex items-center ml-4 mb-4">
-                            <Checkbox id="use_beep_sound" v-model:checked="form.use_beep_sound" />
+                            <Checkbox id="use_beep_sound" v-model:checked="form.use_beep_sound" dashed="true" />
                             <InputLabel for="use_beep_sound" class="ml-2" value="ミス音を鳴らす" />
                         </div>
                         <div class="mb-2">音量</div>

@@ -12,6 +12,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    dashed: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const proxyChecked = computed({
@@ -27,10 +31,6 @@ const proxyChecked = computed({
 
 
 <template>
-    <input
-        v-model="proxyChecked"
-        type="checkbox"
-        :value="value"
-        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-    >
+    <input v-model="proxyChecked" type="checkbox" :value="value" :class="{ 'border-dashed': dashed }"
+        class="rounded bg-main text-black shadow-sm border-black border-2">
 </template>

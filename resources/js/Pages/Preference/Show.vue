@@ -63,7 +63,7 @@ const storeSentence = () => {
                 <form @submit.prevent="store">
 
                     <div class="flex">
-                        <Checkbox id="limit_wpm" v-model:checked="form.limit_wpm" />
+                        <Checkbox id="limit_wpm" v-model:checked="form.limit_wpm" dashed="true" />
                         <InputLabel for="limit_wpm" value="WPMで選ぶ" />
                     </div>
                     <div v-show="form.limit_wpm" class="flex">
@@ -73,7 +73,7 @@ const storeSentence = () => {
                     </div>
 
                     <div class="flex">
-                        <Checkbox id="limit_accuracy" v-model:checked="form.limit_accuracy" />
+                        <Checkbox id="limit_accuracy" v-model:checked="form.limit_accuracy" dashed="true" />
                         <InputLabel for="limit_accuracy" value="正答率で選ぶ" />
                     </div>
                     <div v-show="form.limit_accuracy" class="flex">
@@ -95,7 +95,7 @@ const storeSentence = () => {
                     </div>
 
                     <div class="flex">
-                        <Checkbox id="is_random" v-model:checked="form.is_random" />
+                        <Checkbox id="is_random" v-model:checked="form.is_random" dashed="true" />
                         <InputLabel for="is_random" value="ランダムに出題する" />
                     </div>
 
