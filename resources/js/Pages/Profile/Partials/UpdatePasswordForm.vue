@@ -38,63 +38,33 @@ const updatePassword = () => {
 </script>
 
 <template>
-    <FormSection @submitted="updatePassword">
-        <template #title>
-            Update Password
-        </template>
+    <div>
+        <form @submit.prevent="updatePassword">
 
-        <template #description>
-            Ensure your account is using a long, random password to stay secure.
-        </template>
-
-        <template #form>
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="current_password" value="Current Password" />
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
-                    v-model="form.current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
+            <div class="mt-2 mb-6">
+                <InputLabel for="current_password" value="現在のパスワード" />
+                <TextInput id="current_password" ref="currentPasswordInput" v-model="form.current_password" type="password"
+                    class="mt-1 block w-full max-w-xl" autocomplete="current-password" />
                 <InputError :message="form.errors.current_password" class="mt-2" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password" value="New Password" />
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
+            <div class="mb-6">
+                <InputLabel for="password" value="新しいパスワード" />
+                <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
+                    class="mt-1 block w-full max-w-xl" autocomplete="new-password" />
                 <InputError :message="form.errors.password" class="mt-2" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
+            <div class="mb-7">
+                <InputLabel for="password_confirmation" value="新しいパスワード（確認）" />
+                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
+                    class="mt-1 block w-full max-w-xl" autocomplete="new-password" />
                 <InputError :message="form.errors.password_confirmation" class="mt-2" />
             </div>
-        </template>
 
-        <template #actions>
-            <ActionMessage :on="form.recentlySuccessful" class="mr-3">
-                Saved.
-            </ActionMessage>
-
-            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+            <PrimaryButton class="px-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                保存
             </PrimaryButton>
-        </template>
-    </FormSection>
+        </form>
+    </div>
 </template>

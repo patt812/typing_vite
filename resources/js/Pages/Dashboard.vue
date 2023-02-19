@@ -12,7 +12,9 @@ const props = defineProps({
 <template>
     <AppLayout title="Dashboard">
         <ContentFrame>
-            <Play :sentences="sentences" />
+            <template #content>
+                <Play :sentences="sentences" />
+            </template>
         </ContentFrame>
     </AppLayout>
 </template>

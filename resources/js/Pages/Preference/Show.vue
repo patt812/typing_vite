@@ -54,57 +54,59 @@ const storeSentence = () => {
         <Head title="出題設定" />
 
         <ContentFrame>
-            <FlashMessage />
+            <template #content>
+                <FlashMessage />
 
-            <SentenceList :sentences="sentences" from="preference" @store="storeSentence" />
-            <InputError :message="error" />
+                <SentenceList :sentences="sentences" from="preference" @store="storeSentence" />
+                <InputError :message="error" />
 
-            <form @submit.prevent="store">
+                <form @submit.prevent="store">
 
-                <div class="flex">
-                    <Checkbox id="limit_wpm" v-model:checked="form.limit_wpm" />
-                    <InputLabel for="limit_wpm" value="WPMで選ぶ" />
-                </div>
-                <div v-show="form.limit_wpm" class="flex">
-                    <TextInput type="number" v-model="form.min_wpm" />
-                    <span>〜</span>
-                    <TextInput type="number" v-model="form.max_wpm" />
-                </div>
+                    <div class="flex">
+                        <Checkbox id="limit_wpm" v-model:checked="form.limit_wpm" dashed="true" />
+                        <InputLabel for="limit_wpm" value="WPMで選ぶ" />
+                    </div>
+                    <div v-show="form.limit_wpm" class="flex">
+                        <TextInput type="number" v-model="form.min_wpm" />
+                        <span>〜</span>
+                        <TextInput type="number" v-model="form.max_wpm" />
+                    </div>
 
-                <div class="flex">
-                    <Checkbox id="limit_accuracy" v-model:checked="form.limit_accuracy" />
-                    <InputLabel for="limit_accuracy" value="正答率で選ぶ" />
-                </div>
-                <div v-show="form.limit_accuracy" class="flex">
-                    <TextInput type="number" v-model="form.min_accuracy" />
-                    <span>〜</span>
-                    <TextInput type="number" v-model="form.max_accuracy" />
-                </div>
+                    <div class="flex">
+                        <Checkbox id="limit_accuracy" v-model:checked="form.limit_accuracy" dashed="true" />
+                        <InputLabel for="limit_accuracy" value="正答率で選ぶ" />
+                    </div>
+                    <div v-show="form.limit_accuracy" class="flex">
+                        <TextInput type="number" v-model="form.min_accuracy" />
+                        <span>〜</span>
+                        <TextInput type="number" v-model="form.max_accuracy" />
+                    </div>
 
-                <InputLabel for="prior_no_stats" value="統計がない文章の優先度" />
-                <div class="flex">
-                    <input type="radio" name="prior-type" id="prior-every" v-model="form.prior_no_stats" value="0">
-                    <InputLabel for="prior-every" value="未選択でも優先して出題" />
+                    <InputLabel for="prior_no_stats" value="統計がない文章の優先度" />
+                    <div class="flex">
+                        <input type="radio" name="prior-type" id="prior-every" v-model="form.prior_no_stats" value="0">
+                        <InputLabel for="prior-every" value="未選択でも優先して出題" />
 
-                    <input type="radio" name="prior-type" id="prior-selected" v-model="form.prior_no_stats" value="1">
-                    <InputLabel for="prior-selected" value="選択された中で優先して出題" />
+                        <input type="radio" name="prior-type" id="prior-selected" v-model="form.prior_no_stats" value="1">
+                        <InputLabel for="prior-selected" value="選択された中で優先して出題" />
 
-                    <input type="radio" name="prior-type" id="prior-none" v-model="form.prior_no_stats" value="2">
-                    <InputLabel for="prior-none" value="設定しない" />
-                </div>
+                        <input type="radio" name="prior-type" id="prior-none" v-model="form.prior_no_stats" value="2">
+                        <InputLabel for="prior-none" value="設定しない" />
+                    </div>
 
-                <div class="flex">
-                    <Checkbox id="is_random" v-model:checked="form.is_random" />
-                    <InputLabel for="is_random" value="ランダムに出題する" />
-                </div>
+                    <div class="flex">
+                        <Checkbox id="is_random" v-model:checked="form.is_random" dashed="true" />
+                        <InputLabel for="is_random" value="ランダムに出題する" />
+                    </div>
 
-                <div class="flex">
-                    <InputLabel value="出題数" for="sentences" />
-                    <TextInput type="text" id="sentences" v-model="form.sentences" />
-                </div>
+                    <div class="flex">
+                        <InputLabel value="出題数" for="sentences" />
+                        <TextInput type="text" id="sentences" v-model="form.sentences" />
+                    </div>
 
-                <PrimaryButton :disabled="form.processing">保存する</PrimaryButton>
-            </form>
+                    <PrimaryButton :disabled="form.processing">保存する</PrimaryButton>
+                </form>
+            </template>
         </ContentFrame>
     </AppLayout>
 </template>
