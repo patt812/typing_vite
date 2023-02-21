@@ -7,25 +7,39 @@ import TextInput from '@/Components/TextInput.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import Checkbox from '@/Components/Checkbox.vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps({
     sentences: Array,
+    focusInput: Boolean,
     from: String,
-    customFilter: Object,
+    showIfSelected: Boolean
 });
 
-const isPreference = ref(props.from == 'preference')
+const isPreference = ref(['preference'].includes(props.from))
+
+const searchBox = ref(null);
 
 const searchWord = ref('');
 
 const radioDiv = ref(0);
 
-const customFilter = ref({});
+const selectedIndex = ref(null);
+
+const emits = defineEmits('fill');
+
+const select = (sentence, index) => {
+    if (index == selectedIndex.value) {
+        selectedIndex.value = null;
+        emits('fill', null);
+        return;
+    }
+    selectedIndex.value = index;
+    emits('fill', sentence);
+}
 
 const filtered = computed(() => {
     let sentence = props.sentences;
-    if (!isPreference.value) return sentence;
 
     if (radioDiv.value == 1) {
         sentence = sentence.filter(s => {
@@ -43,6 +57,12 @@ const filtered = computed(() => {
     }
     return sentence;
 });
+
+onMounted(() => {
+    if (props.focusInput) {
+        searchBox.value.focus();
+    }
+})
 
 </script>
 
@@ -62,26 +82,51 @@ const filtered = computed(() => {
 
             <div class="flex">
                 <InputLabel for="search-box" value="検索" />
-                <TextInput id="search-box" v-model="searchWord" />
+                <TextInput ref="searchBox" id="search-box" class="ml-2" v-model="searchWord" />
             </div>
         </div>
 
-        <div v-if="isPreference" class="flex cursor-pointer">
-            <div class="mr-2"></div>
-            <div class="mr-2">出題</div>
-            <div class="mr-2">かな</div>
-            <div class="mr-2">文章</div>
-        </div>
+        <div class="w-full">
+            <div class="flex items-center justify-between border-black border-b-2 font-bold">
+                <div class="w-1/12 px-2 py-1"></div>
+                <div v-if="showIfSelected" class="w-1/12 px-2 py-1">出題</div>
+                <div class="w-5/12 px-2 py-1">文章</div>
+                <div class="w-5/12 px-2 py-1">かな</div>
+            </div>
 
-        <div v-for="(sentence, index) in filtered" :key="sentence.id">
-            <div class="flex cursor-pointer" @click="$emit('fill', sentence)">
-                <div class="mr-2">{{ index + 1 }}</div>
-                <Checkbox v-model:checked="sentence.is_selected" />
-                <div class="mr-2">{{ sentence.sentence }}</div>
-                <div>{{ sentence.kana }}</div>
+            <div class="max-h-60 overflow-auto scroll-bar">
+                <template v-for="(sentence, index) in filtered" :key="sentence.id">
+                    <div class="flex items-center justify-between cursor-pointer py-1 border-black border-b-2"
+                        :class="{ 'bg-black text-white': index == selectedIndex }" @click="select(sentence, index)">
+                        <div class="w-1/12 px-2 text-center">{{ index + 1 }}</div>
+                        <Checkbox v-if="showIfSelected" v-model:checked="sentence.is_selected" />
+                        <div :class="{ 'truncate': selectedIndex != index }" class="w-5/12 px-2">
+                            {{ sentence.sentence }}
+                        </div>
+                        <div :class="{ 'truncate': selectedIndex != index }" class="w-5/12 px-2">
+                            {{ sentence.kana }}
+                        </div>
+                    </div>
+                </template>
+                <div v-if="!filtered.length" class="text-center py-1 border-black border-b-2">見つかりませんでした...</div>
             </div>
         </div>
 
         <PrimaryButton v-if="isPreference" @click="$emit('store')">反映する</PrimaryButton>
     </div>
 </template>
+
+<style scoped>
+.scroll-bar {
+    @apply overflow-y-auto
+}
+
+.scroll-bar::-webkit-scrollbar {
+    @apply w-[3px]
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+    @apply bg-black
+}
+</style>
+
