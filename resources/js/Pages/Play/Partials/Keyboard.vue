@@ -23,7 +23,7 @@ const keyBoard = ref([
 
 <style scoped>
 .keys {
-    @apply mt-2 flex w-full h-12 justify-center items-center gap-x-1
+    @apply select-none mt-2 flex w-full h-12 justify-center items-center gap-x-1
 }
 
 .key {

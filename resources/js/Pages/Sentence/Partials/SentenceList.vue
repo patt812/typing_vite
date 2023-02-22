@@ -115,18 +115,3 @@ onMounted(() => {
         <PrimaryButton v-if="isPreference" @click="$emit('store')">反映する</PrimaryButton>
     </div>
 </template>
-
-<style scoped>
-.scroll-bar {
-    @apply overflow-y-auto
-}
-
-.scroll-bar::-webkit-scrollbar {
-    @apply w-[3px]
-}
-
-.scroll-bar::-webkit-scrollbar-thumb {
-    @apply bg-black
-}
-</style>
-
