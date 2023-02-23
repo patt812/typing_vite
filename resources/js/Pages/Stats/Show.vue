@@ -112,17 +112,17 @@ const fill = (sentence) => {
             <template #title>総合統計</template>
 
             <template #content>
-                <div class="text-center">
+                <div class="text-center mb-4">
                     <div class="mt-1">WPM：{{ userStats.wpm.toFixed(2).replace('.00', '') }}</div>
                     <div class="mt-1">最高WPM：{{ userStats.max_wpm }}</div>
                     <div class="mt-1">正答率：{{ userStats.accuracy.toFixed(2).replace('.00', '') }}%</div>
                     <div class="mt-1">打鍵数：{{ userStats.typed }}</div>
                     <div class="mt-1">プレイ回数：{{ userStats.played }}</div>
                     <div class="mt-1">プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
-                    <DangerButton class="mt-3 mx-auto" @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
                 </div>
             </template>
         </ContentFrame>
+        <DangerButton class="mt-10 mx-auto shadow-xl" @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
 
         <Modal :show="resetConfirm" @close="resetConfirm = false">
             <div v-if="selected && selected.stat" class="text-center">
