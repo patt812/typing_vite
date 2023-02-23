@@ -93,7 +93,7 @@ const clearPhotoFileInput = () => {
                 <InputError :message="form.errors.email" class="mt-2" />
             </div>
 
-            <PrimaryButton type="submit" class="px-10" :class="{ 'opacity-25': form.processing }"
+            <PrimaryButton type="submit" class="mx-auto px-10" :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing">
                 保存
             </PrimaryButton>

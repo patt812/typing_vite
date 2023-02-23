@@ -62,7 +62,7 @@ const updatePassword = () => {
                 <InputError :message="form.errors.password_confirmation" class="mt-2" />
             </div>
 
-            <PrimaryButton class="px-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <PrimaryButton class="mx-auto px-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 保存
             </PrimaryButton>
         </form>

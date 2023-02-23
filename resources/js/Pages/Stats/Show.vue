@@ -119,7 +119,7 @@ const fill = (sentence) => {
                     <div class="mt-1">打鍵数：{{ userStats.typed }}</div>
                     <div class="mt-1">プレイ回数：{{ userStats.played }}</div>
                     <div class="mt-1">プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
-                    <DangerButton class="mt-3" @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
+                    <DangerButton class="mt-3 mx-auto" @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
                 </div>
             </template>
         </ContentFrame>
