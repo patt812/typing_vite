@@ -57,7 +57,7 @@ const storeSentence = () => {
             <template #content>
                 <FlashMessage />
 
-                <SentenceList :sentences="sentences" from="preference" @store="storeSentence" />
+                <SentenceList :sentences="sentences" :show-if-selected="true" from="preference" @store="storeSentence" />
                 <InputError :message="error" />
 
                 <form @submit.prevent="store">

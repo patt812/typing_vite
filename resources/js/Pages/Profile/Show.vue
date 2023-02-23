@@ -51,7 +51,7 @@ const submit = () => {
                         <div class="mb-2">音量</div>
                         <TextInput type="range" v-model="form.volume" min="0" max="1" step="0.01" />
                     </div>
-                    <PrimaryButton class="px-10" @click="submit">保存</PrimaryButton>
+                    <PrimaryButton class="mx-auto px-10" @click="submit">保存</PrimaryButton>
                 </template>
             </ContentFrame>
 

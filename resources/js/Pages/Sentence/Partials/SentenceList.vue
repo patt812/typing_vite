@@ -80,13 +80,13 @@ onMounted(() => {
                 <InputLabel for="list-type-off" value="出題しない" />
             </div>
 
-            <div class="flex">
-                <InputLabel for="search-box" value="検索" />
-                <TextInput ref="searchBox" id="search-box" class="ml-2" v-model="searchWord" />
+            <div class="flex w-full mt-2">
+                <InputLabel for="sentence-search" value="検索" />
+                <TextInput ref="searchBox" id="sentence-search" class="ml-2 w-full max-w-md" v-model="searchWord" />
             </div>
         </div>
 
-        <div class="w-full">
+        <div class="w-full mt-2">
             <div class="flex items-center justify-between border-black border-b-2 font-bold">
                 <div class="w-1/12 px-2 py-1"></div>
                 <div v-if="showIfSelected" class="w-1/12 px-2 py-1">出題</div>
@@ -94,12 +94,12 @@ onMounted(() => {
                 <div class="w-5/12 px-2 py-1">かな</div>
             </div>
 
-            <div class="max-h-60 overflow-auto scroll-bar">
+            <div class="max-h-60 overflow-auto scroll-bar mb-3">
                 <template v-for="(sentence, index) in filtered" :key="sentence.id">
                     <div class="flex items-center justify-between cursor-pointer py-1 border-black border-b-2"
                         :class="{ 'bg-black text-white': index == selectedIndex }" @click="select(sentence, index)">
                         <div class="w-1/12 px-2 text-center">{{ index + 1 }}</div>
-                        <Checkbox v-if="showIfSelected" v-model:checked="sentence.is_selected" />
+                        <Checkbox v-if="showIfSelected" v-model:checked="sentence.is_selected" @click.stop="" />
                         <div :class="{ 'truncate': selectedIndex != index }" class="w-5/12 px-2">
                             {{ sentence.sentence }}
                         </div>

@@ -19,7 +19,8 @@ const props = defineProps({
 });
 
 const sentence = ref(null);
-const flush_message = computed(() => props.status);
+
+const isInsert = ref(true);
 
 const insertTemplate = ref({
     sentence: '',
@@ -33,6 +34,7 @@ onMounted(() => {
 });
 
 const form = useForm({
+    id: null,
     sentence: '',
     kana: '',
 });
@@ -43,8 +45,7 @@ const updateForm = useForm({
     kana: '',
 });
 
-const canStore = computed(() => !form.kana || !form.sentence);
-const canUpdate = computed(() => updateForm.id == null);
+const isSentenceAndKanaFilled = computed(() => !form.kana || !form.sentence);
 
 const appendInserts = (num) => {
     for (let i = 0; i < num; i++) {
@@ -52,13 +53,27 @@ const appendInserts = (num) => {
     }
 }
 
-const store = () => {
-    form.put(route('sentence.store'), {
+const submit = () => {
+    if (isInsert.value) {
+        form.put(route('sentence.store'), {
+            onSuccess: () => {
+                form.reset();
+            }
+        });
+    } else {
+        form.put(route('sentence.update'));
+    }
+};
+
+const erase = () => {
+    form.delete(route('sentence.delete'), {
         onSuccess: () => {
             form.reset();
         }
     });
 };
+
+const processingBulkStore = ref(false);
 
 const bulkStore = () => {
     const kanaList = props.sentences.map(sentence => sentence.kana);
@@ -69,7 +84,7 @@ const bulkStore = () => {
             inserts.value.splice(i--, 1);
             continue;
         }
-        if (kanaList.includes(row.kana)) {
+        if (row.kana && kanaList.includes(row.kana)) {
             inserts.value[i].error = '入力したかなは既に登録されているか、重複しています。';
             isValid = false;
             continue;
@@ -91,6 +106,8 @@ const bulkStore = () => {
         if (invalidChars.size) {
             inserts.value[i].error = 'かなに使用できない文字が含まれています：' + Array.from(invalidChars).join(',');
             isValid = false;
+        } else {
+            inserts.value[i].error = '';
         }
     }
     if (!inserts.value.length) {
@@ -109,28 +126,16 @@ const bulkStore = () => {
     });
 };
 
-const processingBulkStore = ref(false);
-
-const update = () => {
-    updateForm.put(route('sentence.update'));
-};
-
-const erase = () => {
-    updateForm.delete(route('sentence.delete'), {
-        onSuccess: () => {
-            updateForm.reset();
-        }
-    });
-};
-
-const fill = (sentence) => {
-    if (sentence.id == updateForm.id) {
-        updateForm.reset();
+const onFill = (sentence) => {
+    if (!sentence || sentence.id == form.id) {
+        form.reset();
+        isInsert.value = true;
         return;
     }
-    updateForm.id = sentence.id;
-    updateForm.sentence = sentence.sentence;
-    updateForm.kana = sentence.kana;
+    form.id = sentence.id;
+    form.sentence = sentence.sentence;
+    form.kana = sentence.kana;
+    isInsert.value = false;
 };
 </script>
 
@@ -143,45 +148,30 @@ const fill = (sentence) => {
             <FlashMessage />
 
             <ContentFrame>
-                <template #content>
-                    <SentenceList :sentences="sentences" :from="'sentence'" @fill="fill" />
+                <template #title>文章登録</template>
 
-                    <form @submit.prevent="store">
+                <template #content>
+                    <SentenceList :sentences="sentences" :from="'sentence'" @fill="onFill" />
+
+                    <form class="mt-4" @submit.prevent="submit">
                         <div>
-                            <div class="flex">
-                                <InputLabel for="sentence" value="文章" />
-                                <TextInput id="sentence" ref="sentence" v-model="form.sentence" required />
-                            </div>
+                            <InputLabel for="sentence" value="文章" />
+                            <TextInput ref="sentence" id="sentence" type="text" class="mt-1 w-full max-w-2xl"
+                                v-model="form.sentence" required />
                             <InputError :message="form.errors.sentence" />
 
-                            <div class="flex">
-                                <InputLabel for="kana" value="かな" />
-                                <TextInput id="kana" v-model="form.kana" required />
-                            </div>
+                            <InputLabel for="kana" class="mt-3" value="かな" />
+                            <TextInput id="kana" type="text" class="mt-1 w-full max-w-2xl" v-model="form.kana" required />
                             <InputError :message="form.errors.kana" />
                         </div>
 
-                        <PrimaryButton :disabled="canStore">登録</PrimaryButton>
-                    </form>
-
-                    <form @submit.prevent="update">
-                        <div>
-                            <div class="flex">
-                                <InputLabel for="sentence" value="文章" />
-                                <TextInput id="sentence" ref="sentence" v-model="updateForm.sentence" required />
-                            </div>
-                            <InputError :message="updateForm.errors.sentence" />
-
-                            <div class="flex">
-                                <InputLabel for="kana" value="かな" />
-                                <TextInput id="kana" v-model="updateForm.kana" required />
-                            </div>
-                            <InputError :message="updateForm.errors.kana" />
-                        </div>
-
-                        <div class="flex">
-                            <PrimaryButton :disabled="canUpdate">更新</PrimaryButton>
-                            <DangerButton @click.prevent="erase" :disabled="canUpdate">削除</DangerButton>
+                        <div class="w-full mt-6 flex align-middle items-center justify-center">
+                            <PrimaryButton :disabled="isSentenceAndKanaFilled">
+                                {{ isInsert ? '登録' : '更新' }}
+                            </PrimaryButton>
+                            <DangerButton class="ml-16" @click.prevent="erase" :disabled="!form.id">
+                                削除
+                            </DangerButton>
                         </div>
                     </form>
                 </template>
@@ -191,43 +181,69 @@ const fill = (sentence) => {
                 <template #title>一括登録</template>
 
                 <template #content>
-                    <div>※文章とかなが入力されていない行は登録時に自動削除されます</div>
-                    <SecondaryButton @click="appendInserts(1)">+1</SecondaryButton>
-                    <SecondaryButton @click="appendInserts(5)">+5</SecondaryButton>
+                    <div class="mt-1">文章とかなが入力されていない行は登録時に自動削除されます。</div>
+                    <div class="mt-1">Shift + Enterでも登録できます。</div>
+                    <SecondaryButton class="mt-3" @click="appendInserts(1)">+1</SecondaryButton>
+                    <SecondaryButton class="ml-3" @click="appendInserts(5)">+5</SecondaryButton>
 
                     <form @submit.prevent="">
-                        <table>
-                            <thead>
-                                <th />
-                                <th>文章</th>
-                                <th>かな</th>
-                            </thead>
+                        <div class="w-full flex my-2 border-b-2 border-black">
+                            <div class="w-10" />
+                            <div class="font-bold w-6/12 text-center">文章</div>
+                            <div class="font-bold w-6/12 text-center">かな</div>
+                            <div class="w-10" />
+                            <div class="w-8" />
+                        </div>
 
-                            <tbody>
-                                <tr v-for="(row, index) in inserts" :key="row">
-                                    <td>{{ index + 1 }}</td>
-                                    <td>
-                                        <TextInput v-model="row.sentence" :disabled="processingBulkStore" />
-                                    </td>
-                                    <td>
-                                        <TextInput v-model="row.kana" :disabled="processingBulkStore" />
-                                    </td>
-                                    <td class="cursor-pointer" @click="inserts.splice(index, 0, { ...row })">
-                                        複製
-                                    </td>
-                                    <td v-if="inserts.length > 1" class="cursor-pointer" @click="inserts.splice(index, 1)">
-                                        削除
-                                    </td>
-                                    <td>
-                                        <InputError :message="row.error" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="mt-1 scroll-bar overflow-auto max-h-80 w-full">
+                            <div v-for="(row, index) in inserts" :key="row">
+                                <div class="flex w-full mb-1">
+                                    <div class="w-10 text-center">{{ index + 1 }}</div>
+                                    <div class="w-6/12">
+                                        <TextInput class="w-full" v-model="row.sentence" :disabled="processingBulkStore"
+                                            @keydown.shift.enter="bulkStore" />
+                                    </div>
+                                    <div class="w-6/12">
+                                        <TextInput class="w-full ml-1" v-model="row.kana" :disabled="processingBulkStore"
+                                            @keydown.shift.enter="bulkStore" />
+                                    </div>
+                                    <div class="flex items-center cursor-pointer w-fit ml-3"
+                                        @click="inserts.splice(index, 0, { ...row, error: '' })">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-fit h-[18px]" viewBox="0 0 64 64"
+                                            aria-labelledby="title" aria-describedby="desc" role="img"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink">
+                                            <title>Copy</title>
+                                            <desc>A line styled icon from Orion Icon Library.</desc>
+                                            <path data-name="layer2" fill="none" stroke="#000000" stroke-miterlimit="10"
+                                                stroke-width="4" d="M16 48H2V2h46v14" stroke-linejoin="round"
+                                                stroke-linecap="round"></path>
+                                            <path data-name="layer1" fill="none" stroke="#000000" stroke-miterlimit="10"
+                                                stroke-width="4" d="M16 16h46v46H16z" stroke-linejoin="round"
+                                                stroke-linecap="round"></path>
+                                        </svg>
+                                    </div>
+                                    <div v-if="inserts.length > 1" class="flex items-center cursor-pointer w-fit ml-1 mr-1"
+                                        @click="inserts.splice(index, 1)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-fit h-6" viewBox="0 0 64 64"
+                                            aria-labelledby="title" aria-describedby="desc" role="img"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink">
+                                            <title>Close</title>
+                                            <desc>A line styled icon from Orion Icon Library.</desc>
+                                            <path data-name="layer1" fill="none" stroke="#ff0000" stroke-miterlimit="10"
+                                                stroke-width="6" d="M41.999 20.002l-22 22m22 0L20 20"
+                                                stroke-linejoin="round" stroke-linecap="round"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="mb-2 pl-9">
+                                    <InputError :message="row.error" />
+                                </div>
+                            </div>
+                        </div>
 
-                        <InputError :message="updateForm.errors.kana" />
-                        <PrimaryButton type="button" @click="bulkStore" :disabled="processingBulkStore">
-                            登録
+                        <PrimaryButton type="button" class="mt-4 mx-auto" @click="bulkStore"
+                            :disabled="processingBulkStore">
+                            一括登録
                         </PrimaryButton>
                     </form>
                 </template>
