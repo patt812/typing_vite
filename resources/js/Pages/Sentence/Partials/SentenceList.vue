@@ -8,6 +8,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import Checkbox from '@/Components/Checkbox.vue';
 import { computed, onMounted, ref } from 'vue';
+import RadioInput from '@/Components/RadioInput.vue';
 
 const props = defineProps({
     sentences: Array,
@@ -69,18 +70,20 @@ onMounted(() => {
 <template>
     <div>
         <div>
-            <div v-if="isPreference" class="flex">
-                <input type="radio" name="list-type" id="list-type-all" v-model="radioDiv" value="0">
-                <InputLabel for="list-type-all" value="すべて表示" />
+            <div v-if="isPreference" class="flex mt-1 items-center align-middle">
+                <RadioInput name="list-type" id="list-type-all" v-model:checked="radioDiv" value="0" />
+                <InputLabel class="ml-1 pt-0.5" for="list-type-all" value="すべて表示" />
 
-                <input type="radio" name="list-type" id="list-type-on" v-model="radioDiv" value="1">
-                <InputLabel for="list-type-on" value="出題する" />
+                <RadioInput type="radio" class="ml-3" name="list-type" id="list-type-on" v-model:checked="radioDiv"
+                    value="1" />
+                <InputLabel class="ml-1 pt-0.5" for="list-type-on" value="出題する" />
 
-                <input type="radio" name="list-type" id="list-type-off" v-model="radioDiv" value="2">
-                <InputLabel for="list-type-off" value="出題しない" />
+                <RadioInput type="radio" class="ml-3" name="list-type" id="list-type-off" v-model:checked="radioDiv"
+                    value="2" />
+                <InputLabel class="ml-1 pt-0.5" for="list-type-off" value="出題しない" />
             </div>
 
-            <div class="flex w-full mt-2">
+            <div class="flex w-full mt-3">
                 <InputLabel for="sentence-search" value="検索" />
                 <TextInput ref="searchBox" id="sentence-search" class="ml-2 w-full max-w-md" v-model="searchWord" />
             </div>
@@ -99,7 +102,9 @@ onMounted(() => {
                     <div class="flex items-center justify-between cursor-pointer py-1 border-black border-b-2"
                         :class="{ 'bg-black text-white': index == selectedIndex }" @click="select(sentence, index)">
                         <div class="w-1/12 px-2 text-center">{{ index + 1 }}</div>
-                        <Checkbox v-if="showIfSelected" v-model:checked="sentence.is_selected" @click.stop="" />
+                        <Checkbox v-if="showIfSelected"
+                            :class="{ 'checked:border-white border-white': index == selectedIndex }"
+                            v-model:checked="sentence.is_selected" @click.stop="" />
                         <div :class="{ 'truncate': selectedIndex != index }" class="w-5/12 px-2">
                             {{ sentence.sentence }}
                         </div>
@@ -112,6 +117,8 @@ onMounted(() => {
             </div>
         </div>
 
-        <PrimaryButton v-if="isPreference" @click="$emit('store')">反映する</PrimaryButton>
+        <PrimaryButton v-if="isPreference" class="mt-4 mx-auto" @click="$emit('store')">
+            反映する
+        </PrimaryButton>
     </div>
 </template>
