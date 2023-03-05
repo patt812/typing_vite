@@ -35,13 +35,14 @@ const submit = () => {
             <div>
                 <InputLabel for="name" value="ユーザー名" />
                 <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" required autofocus
-                    autocomplete="name" />
+                    autocomplete="name" maxlength="255" />
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="email" value="メールアドレス" />
-                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" required />
+                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" required
+                    maxlength="255" />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
