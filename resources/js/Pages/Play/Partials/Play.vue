@@ -165,10 +165,10 @@ onUnmounted(() => {
             </div>
 
             <div class="scroll-bar max-h-60 overflow-auto">
-                <div v-for="i of typing.sentence.ids.length" :key="i"
+                <div v-for="i of typing.sentence.ids.length" :key="i" @click="getStats(i - 1)"
                     class="flex cursor-pointer my-2 border-b-2 border-black">
                     <div>{{ i }}</div>
-                    <div class="ml-2" @click="getStats(i - 1)">{{ typing.sentence.sentences[i - 1] }}</div>
+                    <div class="ml-2">{{ typing.sentence.sentences[i - 1] }}</div>
                     <!-- <div @click="getStats(i - 1)">{{ typing.sentence.kanasDisplay[i - 1] }}</div> -->
                 </div>
             </div>
