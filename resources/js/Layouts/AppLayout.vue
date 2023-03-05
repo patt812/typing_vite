@@ -141,7 +141,7 @@ const logout = () => {
 
                                 <div class="ml-3 relative">
                                     <span class="inline-flex rounded-md">
-                                        <NavLink :href="route('profile.show')">
+                                        <NavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                             {{ $page.props.user.name ? $page.props.user.name : 'アカウント設定' }}
                                         </NavLink>
 
