@@ -10,7 +10,6 @@ import DangerButton from '@/Components/DangerButton.vue';
 
 import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import FlashMessage from '@/Components/FlashMessage.vue';
 import ContentFrame from '@/Components/ContentFrame.vue';
 
 const props = defineProps({

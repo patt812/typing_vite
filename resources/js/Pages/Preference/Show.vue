@@ -5,7 +5,6 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import FlashMessage from '@/Components/FlashMessage.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
@@ -73,7 +72,7 @@ const storeSentence = () => {
                     <div class="flex items-center mt-2">
                         <InputLabel value="出題数" for="sentences" />
                         <TextInput type="number" id="sentences" class="ml-2 w-full max-w-[12.8rem]" min="1" max="1000"
-                            v-model="form.sentences" />
+                            v-model="form.sentences" required />
                     </div>
 
                     <InputLabel for="prior_no_stats" class="mt-3" value="統計がない文章の優先度" />
