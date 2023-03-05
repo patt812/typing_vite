@@ -42,17 +42,20 @@ const closeModal = () => {
     </div>
 
     <!-- Delete Account Confirmation Modal -->
-    <Modal :show="confirmingUserDeletion" @close="closeModal">
+    <Modal v-if="confirmingUserDeletion" :show="confirmingUserDeletion" @close="closeModal">
+        <div class="mb-4 text-lg font-bold">アカウントの削除</div>
+
         <div>アカウントを削除しますか？</div>
-        <div>登録した文章や記録など全てのデータが消されます。この処理は元に戻せません。</div>
+        <div>登録した文章や記録など全てのデータが消されます。</div>
+        <div>この処理は元に戻せません。</div>
 
 
-        <div>
+        <div class="mt-7 flex justify-center">
             <SecondaryButton @click="closeModal">
                 戻る
             </SecondaryButton>
 
-            <DangerButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+            <DangerButton class="ml-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                 @click="deleteUser">
                 削除する
             </DangerButton>
