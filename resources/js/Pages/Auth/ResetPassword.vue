@@ -34,49 +34,28 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
+        <h3 class="text-lg font-bold text-gray-900 pb-4">
+            パスワードの再設定
+        </h3>
+
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
+                <InputLabel for="password" value="新しいパスワード" />
+                <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full" required
+                    autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="new-password"
-                />
+                <InputLabel for="password_confirmation" value="新しいパスワード（確認）" />
+                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
+                    class="mt-1 block w-full" required autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-center mt-4">
                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Reset Password
+                    リセット
                 </PrimaryButton>
             </div>
         </form>
