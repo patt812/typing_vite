@@ -28,7 +28,12 @@ const offset = computed(() => {
                 <circle class="line" cx="45" cy="45" r="40" :style="`stroke-dashoffset: ${offset};`"></circle>
             </svg>
             <div class="number">
-                <div class="title">{{ accuracy }}<span>%</span></div>
+                <div class="title">
+                    <span class="!text-2xl">{{ accuracy.toString().split('.')[0] }}</span>
+                    <span class="!text-sm">{{ accuracy.toString().split('.')[1] ? '.' + accuracy.toString().split('.')[1] :
+                        '' }}</span>
+                    <span class="!text-sm">%</span>
+                </div>
             </div>
         </div>
     </div>
