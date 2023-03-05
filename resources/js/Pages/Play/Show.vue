@@ -22,6 +22,9 @@ const isMuted = ref(!settings.use_type_sound && !settings.use_beep_sound);
 <template>
     <div>
         <Play :sentences="sentences" :volume="volume" />
-        <TextInput v-if="!isMuted" type="range" v-model="volume" min="0" max="1" step="0.01" />
+        <div class="flex mt-4">
+            <img :src="volume > 0 ? '/icons/volume-on.png' : '/icons/volume-off.png'" alt="" class="h-8">
+            <input v-if="!isMuted" type="range" v-model="volume" min="0" max="1" step="0.01" class="ml-3 accent-black" />
+        </div>
     </div>
 </template>
