@@ -158,7 +158,7 @@ const logout = () => {
                             <!-- Hamburger -->
                             <div class="-mr-2 flex items-center sm:hidden">
                                 <button
-                                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition"
+                                    class="inline-flex items-center justify-center p-2 rounded-md text-black focus:outline-none transition"
                                     @click="showingNavigationDropdown = !showingNavigationDropdown">
                                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                         <path
@@ -180,12 +180,24 @@ const logout = () => {
                         class="sm:hidden">
                         <div class="pt-2 pb-3 space-y-1">
                             <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                Dashboard
+                                測定
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('preference')" :active="route().current('preference')">
+                                出題
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('sentence')" :active="route().current('sentence')">
+                                文章
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('stats')" :active="route().current('stats')">
+                                統計
                             </ResponsiveNavLink>
                         </div>
 
                         <!-- Responsive Settings Options -->
-                        <div class="pt-4 pb-1 border-t border-gray-200">
+                        <div class="pt-4 pb-1 border-t border-black">
                             <div class="flex items-center px-4">
                                 <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 mr-3">
                                     <img class="h-10 w-10 rounded-full object-cover"
@@ -196,15 +208,12 @@ const logout = () => {
                                     <div class="font-medium text-base text-gray-800">
                                         {{ $page.props.user.name }}
                                     </div>
-                                    <div class="font-medium text-sm text-gray-500">
-                                        {{ $page.props.user.email }}
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="mt-3 space-y-1">
                                 <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
-                                    Profile
+                                    プロフィール
                                 </ResponsiveNavLink>
 
                                 <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures"
@@ -215,7 +224,7 @@ const logout = () => {
                                 <!-- Authentication -->
                                 <form method="POST" @submit.prevent="logout">
                                     <ResponsiveNavLink as="button">
-                                        Log Out
+                                        ログアウト
                                     </ResponsiveNavLink>
                                 </form>
 
