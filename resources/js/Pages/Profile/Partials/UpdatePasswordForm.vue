@@ -44,21 +44,21 @@ const updatePassword = () => {
             <div class="mt-2 mb-6">
                 <InputLabel for="current_password" value="現在のパスワード" />
                 <TextInput id="current_password" ref="currentPasswordInput" v-model="form.current_password" type="password"
-                    class="mt-1 block w-full max-w-xl" autocomplete="current-password" />
+                    class="mt-1 block w-full max-w-xl" autocomplete="current-password" required maxlength="255" />
                 <InputError :message="form.errors.current_password" class="mt-2" />
             </div>
 
             <div class="mb-6">
                 <InputLabel for="password" value="新しいパスワード" />
                 <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
-                    class="mt-1 block w-full max-w-xl" autocomplete="new-password" />
+                    class="mt-1 block w-full max-w-xl" autocomplete="new-password" required />
                 <InputError :message="form.errors.password" class="mt-2" />
             </div>
 
             <div class="mb-7">
                 <InputLabel for="password_confirmation" value="新しいパスワード（確認）" />
                 <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
-                    class="mt-1 block w-full max-w-xl" autocomplete="new-password" />
+                    class="mt-1 block w-full max-w-xl" autocomplete="new-password" required />
                 <InputError :message="form.errors.password_confirmation" class="mt-2" />
             </div>
 
