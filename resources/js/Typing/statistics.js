@@ -43,24 +43,21 @@ export default class Statistics {
 
   getTotalWPM() {
     const result = this.totalCorrect / (this.time / 60);
-    if (isNaN(result)) {
-      console.error(`NaN: correct:${this.totalCorrect} time:${this.time - this.thisStarttime}`);
-    }
+    if (isNaN(result)) return 0;
     if (!isFinite(result)) return 6000;
     return Number(result.toFixed(2));
   }
 
   // WPM = 区間正答数 / (区間経過秒数 / 60)
-  getcurrentWPM() {
+  getCurrentWPM() {
     const result = this.correct / ((this.time - this.thisStarttime) / 60);
-    if (isNaN(result)) {
-      console.error(`NaN: correct:${this.correct} time:${this.time - this.thisStarttime}`);
-    }
+    if (isNaN(result)) return 0;
     if (!isFinite(result)) return 6000;
     return Number(result.toFixed(2));
   }
 
   calcAccuracy(correct, mistake) {
+    if (correct + mistake == 0) return 100;
     if (correct === 0 || correct <= mistake) return 0;
     const accuracy = (((correct - mistake) * 100) / correct).toFixed(2);
     return Number(accuracy);
