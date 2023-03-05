@@ -11,7 +11,6 @@ import Checkbox from '@/Components/Checkbox.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import FlashMessage from '@/Components/FlashMessage.vue';
 import ContentFrame from '@/Components/ContentFrame.vue';
 
 defineProps({
@@ -31,8 +30,6 @@ const submit = () => {
 
 <template>
     <AppLayout title="アカウント設定">
-
-
 
         <div>
             <ContentFrame>

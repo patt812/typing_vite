@@ -2,7 +2,6 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import { computed, onMounted, ref } from '@vue/runtime-core';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import FlashMessage from '@/Components/FlashMessage.vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -69,7 +68,7 @@ const fill = (sentence) => {
 <template>
     <AppLayout>
 
-        <Head title="文章管理" />
+        <Head title="統計管理" />
 
         <ContentFrame>
             <template #title>個別統計</template>
@@ -93,7 +92,7 @@ const fill = (sentence) => {
                             <div class="mb-1">平均正答率：{{ selected.stat.ave_accuracy }}%</div>
                             <div class="mb-1">最大連続ミス数：{{ selected.stat.max_miss_streak }}</div>
 
-                            <DangerButton class="mt-2" @click="resetConfirm = true">
+                            <DangerButton class="mt-4 mx-auto" @click="resetConfirm = true">
                                 リセット
                             </DangerButton>
                         </div>
@@ -124,27 +123,29 @@ const fill = (sentence) => {
         </ContentFrame>
         <DangerButton class="mt-10 mx-auto shadow-xl" @click="resetAllConfirm = true">すべての統計をリセット</DangerButton>
 
-        <Modal :show="resetConfirm" @close="resetConfirm = false">
-            <div v-if="selected && selected.stat" class="text-center">
+        <Modal v-if="resetConfirm" :show="resetConfirm" @close="resetConfirm = false">
+            <div class="mb-4 text-lg font-bold">統計のリセット</div>
+            <div v-if="selected && selected.stat">
                 <div>この統計をリセットしますか？</div>
                 <div class="mt-2">この操作は元に戻せません。</div>
-                <div class="mt-5">{{ selected.sentence }}</div>
+                <div class="mt-5 text-center font-bold">{{ selected.sentence }}</div>
                 <div class="flex justify-center items-center align-middle mt-4">
                     <Checkbox v-model:checked="deleteWithSentence" :dashed="true" id="delete_sentence" />
-                    <InputLabel for="delete_sentence" class="ml-2">文章も削除する</InputLabel>
+                    <InputLabel for="delete_sentence" class="ml-2 !text-red-600 font-bold">文章も削除する</InputLabel>
                 </div>
-                <DangerButton @click="reset" class="mt-6">リセット</DangerButton>
+                <DangerButton @click="reset" class="mt-6 mx-auto">リセット</DangerButton>
             </div>
         </Modal>
 
-        <Modal :show="resetAllConfirm" @close="resetAllConfirm = false">
-            <div class="text-center">
+        <Modal v-if="resetAllConfirm" :show="resetAllConfirm" @close="resetAllConfirm = false">
+            <div class="mb-4 text-lg font-bold">すべての統計をリセット</div>
+            <div>
                 <div>
                     <span v-if="statsCount">{{ statsCount }}件の統計と</span>
-                    <span>総合の統計をリセットしますか？</span>
+                    <span>総合統計をリセットしますか？</span>
                 </div>
                 <div class="mt-2">この操作は元に戻せません。</div>
-                <DangerButton class="mt-4" :disabled="resetAllForm.processing" @click="resetAll">
+                <DangerButton class="mt-4 mx-auto" :disabled="resetAllForm.processing" @click="resetAll">
                     リセット
                 </DangerButton>
             </div>
