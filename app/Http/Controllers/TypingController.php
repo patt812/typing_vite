@@ -307,6 +307,6 @@ class TypingController extends Controller
         DB::transaction(function () use ($request, $setting_play) {
             $setting_play->fill($request->all())->save();
         });
-        session()->flash('message', '更新しました。');
+        session()->flash('message', 'サウンドを設定しました。');
     }
 }
