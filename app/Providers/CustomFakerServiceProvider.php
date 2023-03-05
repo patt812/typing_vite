@@ -8,39 +8,39 @@ use Illuminate\Support\ServiceProvider;
 
 class CustomFakerProvider extends BaseProvider
 {
-    // TODO データを変える
-    protected $sentences = [
-        "あ",
-        "い",
-        "う",
-        "え",
-        "お",
-    ];
-    protected $kanas = [
-        "あ",
-        "い",
-        "う",
-        "え",
-        "お",
-    ];
+    protected $sentences = [];
+    protected $kanas = [];
 
     protected $sentenceCounter = 0;
     protected $kanaCounter = 0;
 
+    public function __construct(FakerGenerator $faker)
+    {
+        parent::__construct($faker);
+        $this->sentences = json_decode(file_get_contents(resource_path('sentence/template.json')), true);
+        $this->kanas = array_map(function ($sentence) {
+            return $sentence['kana'];
+        }, $this->sentences);
+    }
+
     public function sentence(FakerGenerator $faker)
     {
         if ($this->sentenceCounter >= count($this->sentences)) {
-            return null;
+            $this->sentenceCounter = 0;
         }
-        return $this->sentences[$this->sentenceCounter++];
+        $sentence = $this->sentences[$this->sentenceCounter]['sentence'];
+        $this->sentenceCounter++;
+        return $sentence;
     }
 
     public function kanaSentence(FakerGenerator $faker)
     {
         if ($this->kanaCounter >= count($this->kanas)) {
-            return null;
+            $this->kanaCounter = 0;
         }
-        return $this->kanas[$this->kanaCounter++];
+        $kana = $this->kanas[$this->kanaCounter];
+        $this->kanaCounter++;
+        return $kana;
     }
 }
 
