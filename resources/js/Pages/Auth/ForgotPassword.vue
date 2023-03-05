@@ -43,7 +43,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="flex items-center justify-end mt-2 mb-4">
+            <div class="flex items-center justify-center mt-3 mb-4">
                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     送信
                 </PrimaryButton>
