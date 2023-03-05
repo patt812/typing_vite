@@ -76,7 +76,7 @@ const fill = (sentence) => {
 
             <template #content>
                 <div>
-                    <FlashMessage />
+
 
                     <SentenceList :sentences="sentences" :from="'stats'" :focus-input="true" @fill="fill" />
 

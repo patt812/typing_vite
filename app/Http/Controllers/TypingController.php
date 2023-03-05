@@ -150,7 +150,7 @@ class TypingController extends Controller
             'kana' => $request->kana,
         ])->save();
 
-        session()->flash('flush_message', '登録しました。');
+        session()->flash('message', '登録しました。');
     }
 
     public function storeSentences(Request $request)
@@ -188,13 +188,13 @@ class TypingController extends Controller
             'kana' => $request->kana,
         ])->update();
 
-        session()->flash('flush_message', '更新しました。');
+        session()->flash('message', '更新しました。');
     }
 
     public function deleteSentence(Request $request)
     {
         Sentence::find($request->id)->delete();
-        session()->flash('flush_message', '削除しました。');
+        session()->flash('message', '削除しました。');
     }
 
     public function resetStat(Request $request, Sentence $sentence)

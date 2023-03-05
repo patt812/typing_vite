@@ -32,7 +32,7 @@ const submit = () => {
 <template>
     <AppLayout title="アカウント設定">
 
-        <FlashMessage />
+
 
         <div>
             <ContentFrame>

@@ -145,7 +145,7 @@ const onFill = (sentence) => {
         <Head title="文章管理" />
 
         <div>
-            <FlashMessage />
+
 
             <ContentFrame>
                 <template #title>文章登録</template>

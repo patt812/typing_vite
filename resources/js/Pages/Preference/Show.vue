@@ -58,7 +58,7 @@ const storeSentence = () => {
             <template #title>出題設定</template>
 
             <template #content>
-                <FlashMessage />
+
 
                 <SentenceList :sentences="sentences" :show-if-selected="true" from="preference" @store="storeSentence" />
                 <InputError :message="error" />
