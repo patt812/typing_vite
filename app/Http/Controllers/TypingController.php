@@ -75,7 +75,10 @@ class TypingController extends Controller
 
         for ($i=0; $i < count($result['ids']); $i++) {
             $stat = [];
-            if ($sentences[$i]->stat) {
+            $key = $sentences->search(function ($item) use ($result, $i) {
+                return $item->id === $result['ids'][$i] ;
+            });
+            if ($key && $sentences[$key]->stat) {
                 $stat = Stats::where('sentence_id', $result['ids'][$i])->first();
                 $stat->sentence_id = $result['ids'][$i];
                 $stat->played += 1;

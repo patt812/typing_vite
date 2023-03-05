@@ -138,7 +138,7 @@ export default class Game {
     const currentID = this.sentence.ids[this.sentence.current - 1];
     if (!opt_escaped) {
       this.result.update(
-        currentID,
+        this.sentence.current - 1,
         this.statistics.missStreak,
         this.statistics.currentWPM,
         this.statistics.accuracy,

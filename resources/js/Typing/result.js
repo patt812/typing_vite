@@ -31,8 +31,7 @@ export default class Result {
     }, 0) / divisor;
   }
 
-  update(ID, missStreak, wpm, acc) {
-    const i = this.ids.indexOf(ID);
+  update(i, missStreak, wpm, acc) {
     this.recent5ACCs[i] =
       this.popComma(this.recent5ACCs[i], Math.ceil(acc));
     this.recent5WPMs[i] =
