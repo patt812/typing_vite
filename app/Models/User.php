@@ -132,7 +132,7 @@ class User extends Authenticatable
 
         // 統計の情報で制限するか（統計のない文章を優先する場合は未出題のヒット数が規定の出題数を超えていないこと）
         if (($settings->prior_no_stats == 2 || ($settings->prior_no_stats < 2 && $query->count() < $settings->sentences))) {
-            $query->orWhere(function ($sub) use ($settings) {
+            $query->orWhere(function ($sub) use ($settings, $user) {
                 if ($settings->limit_wpm) {
                     if ($settings->min_wpm != null) {
                         $sub->where('ave_wpm', '>=', $settings->min_wpm);
@@ -152,6 +152,7 @@ class User extends Authenticatable
                 if ($settings->prior_no_stats > 0) {
                     $sub->where('is_selected', 1);
                 }
+                $sub->where('user_id', $user->id);
             });
         }
 
@@ -162,7 +163,9 @@ class User extends Authenticatable
 
         // ヒットが出題数より足りない場合は補填
         if (!count($sentences)) {
-            $query = $this->sentences()->where('user_id', $user->id);
+            $query = $this->sentences()->leftJoin('sentence_stats as stats', 'sentences.id', 'sentence_id')
+            ->where('user_id', $user->id);
+
             if ($settings->is_random) {
                 $query->inRandomOrder();
             }
