@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
@@ -32,7 +32,10 @@ const updateProfileInformation = () => {
     form.post(route('user-profile-information.update'), {
         errorBag: 'updateProfileInformation',
         preserveScroll: true,
-        onSuccess: () => clearPhotoFileInput(),
+        onSuccess: () => {
+            clearPhotoFileInput();
+            usePage().props.flash.message = 'プロフィールを更新しました。';
+        },
     });
 };
 
@@ -81,14 +84,14 @@ const clearPhotoFileInput = () => {
             <!-- ユーザー名 -->
             <div class="mt-2 mb-6">
                 <InputLabel for="name" value="ユーザー名" />
-                <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full max-w-xl"
-                    autocomplete="name" />
+                <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full max-w-xl" autocomplete="name"
+                    required maxlength="255" />
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
             <!-- メールアドレス -->
             <div class="mb-7">
-                <InputLabel for="email" value="メールアドレス" />
+                <InputLabel for="email" value="メールアドレス" required maxlength="255" />
                 <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full max-w-xl" />
                 <InputError :message="form.errors.email" class="mt-2" />
             </div>
