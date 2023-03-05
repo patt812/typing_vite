@@ -278,7 +278,7 @@ const logout = () => {
 
                 <!-- フラッシュメッセージ -->
                 <div v-if="$page.props.flash.message" @animationend="$page.props.flash.message = null"
-                    class="flush bg-main absolute z-2 w-full text-center border-l-4 border-r-4 border-b-4 border-black rounded-b-md">
+                    class="flush bg-main font-bold absolute z-2 w-full text-center border-l-4 border-r-4 border-b-4 border-black rounded-b-md">
                     {{ $page.props.flash.message }}
                 </div>
             </nav>
