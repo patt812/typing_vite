@@ -25,7 +25,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', [TypingController::class, 'show'])->name('dashboard');
+    Route::get('/', [TypingController::class, 'show'])->name('dashboard');
     Route::post('/result/store', [TypingController::class, 'storeResult'])->name('play.store');
 
     Route::get('/sentence', [TypingController::class, 'showSentence'])->name('sentence');
