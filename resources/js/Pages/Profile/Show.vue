@@ -32,7 +32,7 @@ const submit = () => {
 <template>
     <AppLayout title="アカウント設定">
 
-        <FlashMessage />
+
 
         <div>
             <ContentFrame>
@@ -49,7 +49,12 @@ const submit = () => {
                             <InputLabel for="use_beep_sound" class="ml-2" value="ミス音を鳴らす" />
                         </div>
                         <div class="mb-2">音量</div>
-                        <TextInput type="range" v-model="form.volume" min="0" max="1" step="0.01" />
+                        <div class="flex mt-4">
+                            <img :src="form.volume > 0 ? '/icons/volume-on.png' : '/icons/volume-off.png'" alt=""
+                                class="h-8">
+                            <input v-if="!isMuted" type="range" v-model="form.volume" min="0" max="1" step="0.01"
+                                class="ml-3 accent-black" style="background-color: rgba(0,0,0,0); border: none;" />
+                        </div>
                     </div>
                     <PrimaryButton class="mx-auto px-10" @click="submit">保存</PrimaryButton>
                 </template>

@@ -62,7 +62,7 @@ const submit = () => {
                 </label>
             </div>
 
-            <PrimaryButton class="mb-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <PrimaryButton class="mt-3 mb-3 mx-auto" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 ログイン
             </PrimaryButton>
 

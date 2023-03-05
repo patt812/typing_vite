@@ -52,7 +52,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 mb-6">
+            <div class="mt-4 mb-4">
                 <InputLabel for="password_confirmation" value="パスワード（確認）" />
                 <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
                     class="mt-1 block w-full" required autocomplete="new-password" />
@@ -75,7 +75,7 @@ const submit = () => {
                 </InputLabel>
             </div>
 
-            <PrimaryButton class="mb-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+            <PrimaryButton class="mb-4 mx-auto" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 登録
             </PrimaryButton>
 
