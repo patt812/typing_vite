@@ -90,7 +90,7 @@ class User extends Authenticatable
                 'updated_at' => now(),
             ]);
 
-            Sentence::factory(5)->create(['user_id' => $user->id]);
+            Sentence::factory(env("DEFAULT_AUTOCOMPLETE_SENTENCES", 5))->create(['user_id' => $user->id]);
         });
     }
 

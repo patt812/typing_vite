@@ -96,7 +96,8 @@ export default class romaPatterns {
     "ゎ": ["lwa", "xwa"],
     "わ": ["wa"],
     "を": ["wo"],
-    "ん": ["nn", "xn"]
+    "ん": ["nn", "xn"],
+    "ー": ["-"]
   };
 
   /**
