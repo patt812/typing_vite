@@ -67,7 +67,7 @@ export default class Statistics {
     if (isCorrect) {
       this.totalCorrect++;
       this.accuracy = this.calcAccuracy(++this.correct, this.mistake);
-      this.currentWPM = this.getcurrentWPM(this.correct, this.mistake);
+      this.currentWPM = this.getCurrentWPM(this.correct, this.mistake);
     } else {
       this.mistake++;
       this.totalMistake++;

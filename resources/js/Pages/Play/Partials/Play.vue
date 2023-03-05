@@ -1,13 +1,15 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Typing from '@/Typing/typing.js'
 import { router } from '@inertiajs/core';
 import { ref } from '@vue/reactivity';
 import { onMounted, onUnmounted, watch } from '@vue/runtime-core';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/vue3';
-import KeyBoard from '@/Pages/Play/Partials/KeyBoard.vue';
+import Keyboard from '@/Pages/Play/Partials/Keyboard.vue';
 import { computed } from '@vue/reactivity';
+import SpeedMeter from '@/Pages/Play/Partials/SpeedMeter.vue';
+import Accuracy from '@/Pages/Play/Partials/Accuracy.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     sentences: Array,
@@ -56,6 +58,7 @@ const getSentence = (counts) => {
 
 watch(() => typing.value.isFinished, (isFinished) => {
     if (isFinished) {
+        console.log(typing.value);
         const result = typing.value.result;
         const stats = typing.value.statistics;
         stats.totalWPM = typing.value.statistics.getTotalWPM();
@@ -89,66 +92,96 @@ onUnmounted(() => {
             {{ typing.dialog ? typing.dialog : typing.DEFAULT_GAME_DIALOG }}
         </div>
 
-        <div v-show="typing.isStarted && !typing.isFinished">
-            <div>
+        <div v-if="typing.isStarted && !typing.isFinished">
+            <div class="text-lg">
                 {{ typing.sentence.sentences[typing.sentence.current] }}
             </div>
-            <div>
+            <div class="text-lg">
                 {{ typing.sentence.kanasDisplay[typing.sentence.current] }}
             </div>
-            <div>
-                <span style="color: yellowgreen">{{
+            <div class="text-lg">
+                <span>{{
                     typing.sentence.displayRoma.slice(0, typing.statistics.correct)
-                }}</span><span>{{ typing.sentence.displayRoma.slice(typing.statistics.correct) }}
+                }}</span><span class="opacity-40">{{ typing.sentence.displayRoma.slice(typing.statistics.correct) }}
                 </span>
             </div>
-            <div>{{ typing.statistics }}</div>
-            <div>{{ typing.statistics.time }}</div>
             <div>{{ typing.countDown }}</div>
 
-            <KeyBoard :correct="correctKey" />
+
+            <div class="mt-32">
+                <div class="flex flex-wrap">
+                    <div class="mt-3 mb-3 flex items-center">
+                        <div>{{ typing.statistics.time }}</div>
+                    </div>
+                    <div class="w-full flex flex-wrap gap-8 ">
+                        <div class="flex items-center flex-wrap">
+                            <SpeedMeter class="mb-3" :angle="typing.statistics.getCurrentWPM()" />
+                            <Accuracy class="ml-4" :accuracy="typing.statistics.calcAccuracy(typing.statistics.correct,
+                                typing.statistics.mistake)" />
+                        </div>
+                        <div class="flex items-center flex-wrap">
+                            <SpeedMeter class="mb-3" :angle="typing.statistics.getTotalWPM()" />
+                            <Accuracy class="ml-4" :accuracy="typing.statistics.calcAccuracy(typing.statistics.totalCorrect,
+                                typing.statistics.totalMistake)" />
+                        </div>
+                    </div>
+                </div>
+
+                <Keyboard :correct="correctKey" />
+            </div>
         </div>
 
         <div v-if="!typing.isStarted && typing.isFinished">
-            <div>
+            <div class="mb-4">
                 <div class="flex">
-                    <div>正答率</div>
+                    <div>出題数：</div>
+                    <div>{{ typing.sentence.current }}</div>
+                </div>
+
+                <div class="flex">
+                    <div>正答率：</div>
                     <div>{{ typing.statistics.accuracy }}%</div>
                 </div>
 
                 <div class="flex">
-                    <div>合計時間</div>
+                    <div>合計時間：</div>
                     <div>{{ typing.statistics.time }}</div>
                 </div>
 
                 <div class="flex">
-                    <div>WPM</div>
+                    <div>WPM：</div>
                     <div>{{ typing.statistics.getTotalWPM() }}</div>
                 </div>
 
                 <div class="flex">
-                    <div>総タイプ数</div>
+                    <div>総タイプ数：</div>
                     <div>{{ typing.statistics.totalCorrect + typing.statistics.totalMistake }}</div>
                 </div>
 
                 <div class="flex">
-                    <div>最大連続ミス数</div>
+                    <div>最大連続ミス数：</div>
                     <div>{{ typing.statistics.maxMissStreak }}</div>
                 </div>
             </div>
 
-            <div v-for="i of typing.sentence.ids.length" :key="i" class="cursor-pointer">
-                <div @click="getStats(i)">{{ typing.sentence.sentences[i] }}</div>
-                <div @click="getStats(i)">{{ typing.sentence.kanasDisplay[i] }}</div>
+            <div class="scroll-bar max-h-60 overflow-auto">
+                <div v-for="i of typing.sentence.ids.length" :key="i"
+                    class="flex cursor-pointer my-2 border-b-2 border-black">
+                    <div>{{ i }}</div>
+                    <div class="ml-2" @click="getStats(i - 1)">{{ typing.sentence.sentences[i - 1] }}</div>
+                    <!-- <div @click="getStats(i - 1)">{{ typing.sentence.kanasDisplay[i - 1] }}</div> -->
+                </div>
             </div>
 
-            <div v-if="stat">
+            <div v-if="stat" class="text-center mt-3">
                 <div>WPM：{{ stat.wpm }}</div>
                 <div>正答率：{{ stat.average }}%</div>
                 <div>連続ミス数：{{ stat.missStreak }}</div>
             </div>
 
-            <button @click="getSentence(0)">もう一度</button>
+            <div class="flex justify-center mt-3">
+                <SecondaryButton @click="getSentence(0)">もう一度</SecondaryButton>
+            </div>
         </div>
     </div>
 </template>
