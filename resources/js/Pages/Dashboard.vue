@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AppLayout title="測定">
         <ContentFrame>
             <template #content>
                 <Play :sentences="sentences" />
