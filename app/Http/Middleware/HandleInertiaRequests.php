@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
         }
 
         return array_merge(parent::share($request), [
+            'app_name' => env('APP_NAME', 'Laravel'),
             'user' => $user,
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
