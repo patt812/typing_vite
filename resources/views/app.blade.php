@@ -8,7 +8,11 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        @if (app()->environment('local'))
+            <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        @else
+            <link rel="stylesheet" href="css/app.css">
+        @endif
 
         <!-- Scripts -->
         @routes
