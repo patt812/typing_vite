@@ -206,7 +206,7 @@ const onFill = (sentence) => {
                                         <TextInput class="w-full ml-1" v-model="row.kana" :disabled="processingBulkStore"
                                             @keydown.shift.enter="bulkStore" />
                                     </div>
-                                    <div class="flex items-center cursor-pointer w-fit ml-3"
+                                    <div class="flex items-center cursor-pointer w-4 ml-3"
                                         @click="inserts.splice(index, 0, { ...row, error: '' })">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-fit h-[18px]" viewBox="0 0 64 64"
                                             aria-labelledby="title" aria-describedby="desc" role="img"
@@ -221,7 +221,7 @@ const onFill = (sentence) => {
                                                 stroke-linecap="round"></path>
                                         </svg>
                                     </div>
-                                    <div v-if="inserts.length > 1" class="flex items-center cursor-pointer w-fit ml-1 mr-1"
+                                    <div v-if="inserts.length > 1" class="flex items-center cursor-pointer w-4 ml-1 mr-1"
                                         @click="inserts.splice(index, 1)">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-fit h-6" viewBox="0 0 64 64"
                                             aria-labelledby="title" aria-describedby="desc" role="img"
