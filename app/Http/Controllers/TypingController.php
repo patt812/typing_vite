@@ -142,7 +142,7 @@ class TypingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'sentence' => ['required', 'string', 'max:255'],
-            'kana' => ['required', 'string', 'max:255', 'regex:/^[ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～]+$/'],
+            'kana' => ['required', 'string', 'max:255', 'regex:/^[ぁ-ゞァ-ヾ！-／：-＠［-｀｛\-～ー\d]+$/'],
         ]);
         $validator->validate();
 
