@@ -101,7 +101,7 @@ const bulkStore = () => {
             isValid = false;
             continue;
         }
-        const invalidChars = new Set(row.kana.match(/[^ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～]/g));
+        const invalidChars = new Set(row.kana.match(/[^ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～\d]/g));
         if (invalidChars.size) {
             inserts.value[i].error = 'かなに使用できない文字が含まれています：' + Array.from(invalidChars).join(',');
             isValid = false;
