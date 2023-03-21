@@ -25,7 +25,8 @@ export default class Patterns {
     for (const key of Object.keys(list)) {
       // 「あ、え、な行、っ」の全パターンは「っ」を前に連結できないので省く
       if (key.match(/^[^あえおな-のっ]/) !== null) {
-        list['っ' + key] = []; for (const value of list[key]) {
+        list['っ' + key] = [];
+        for (const value of list[key]) {
           //  「い、う、ん」の一部パターンは「っ」を前に連結できないので省く
           if (value.match(/(^I$|^U$|^NN$|^N'$)/) === null) {
             list['っ' + key].push(value[0] + value);
@@ -76,6 +77,7 @@ export default class Patterns {
     const SYMBOL_LIST = [',', '.', '/', '-', '!', '?', '[', ']', '(', ')', '~'];
     for (let i = 0; i < 10; i++) list[i.toString()] = [i.toString()];
     for (const symbol of SYMBOL_LIST) list[symbol] = [symbol];
+    list["ー"] = ["-"];
   }
 
   static containsKey(target) {
