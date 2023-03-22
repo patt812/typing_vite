@@ -2,6 +2,7 @@ export default class Statistics {
   constructor() {
     this.accuracy = 0;
     this.currentWPM = 0;
+    this.totalWPM = 0;
     this.time = 0;
     this.previousTime = 0;
     this.thisStarttime = 0;
@@ -68,6 +69,7 @@ export default class Statistics {
       this.totalCorrect++;
       this.accuracy = this.calcAccuracy(++this.correct, this.mistake);
       this.currentWPM = this.getCurrentWPM(this.correct, this.mistake);
+      this.totalWPM = this.getTotalWPM(this.totalCorrect, this.totalMistake);
     } else {
       this.mistake++;
       this.totalMistake++;
