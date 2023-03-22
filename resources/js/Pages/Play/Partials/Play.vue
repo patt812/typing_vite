@@ -4,7 +4,7 @@ import { router } from '@inertiajs/core';
 import { ref } from '@vue/reactivity';
 import { onMounted, onUnmounted, watch } from '@vue/runtime-core';
 import { Inertia } from '@inertiajs/inertia';
-import { usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import Keyboard from '@/Pages/Play/Partials/Keyboard.vue';
 import { computed } from '@vue/reactivity';
 import SpeedMeter from '@/Pages/Play/Partials/SpeedMeter.vue';
@@ -31,6 +31,30 @@ const correctKey = computed(() => {
     const yetNotCorrects = typing.value.sentence.displayRoma.slice(typing.value.statistics.correct);
     if (!yetNotCorrects) return null;
     return yetNotCorrects[0];
+})
+
+const finishedSpan = ref(null);
+const unfinishedSpan = ref(null);
+const roma = ref(null);
+let romaSubstr = 0;
+
+const finishedRoma = computed(() => {
+    const finished = typing.value.sentence.displayRoma.slice(0, typing.value.statistics.correct)
+    // 文字の過半数を超えたら未入力の部分を表示しない
+    if ((romaSubstr || finishedSpan.value?.offsetWidth + unfinishedSpan.value?.offsetWidth > roma.value?.clientWidth)
+        && finishedSpan.value?.offsetWidth * 2 > roma.value?.clientWidth) {
+        romaSubstr++;
+        return finished.substring(romaSubstr);
+    }
+    return finished;
+})
+
+watch(() => finishedRoma.value.length, (length) => {
+    if (length === 0) romaSubstr = 0;
+})
+
+const unfinishedRoma = computed(() => {
+    return typing.value.sentence.displayRoma.slice(typing.value.statistics.correct)
 })
 
 const getStats = (i) => {
