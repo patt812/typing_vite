@@ -1,7 +1,5 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import Play from '@/Pages/Play/Partials/Play.vue'
-import TextInput from '@/Components/TextInput.vue';
 import { usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -20,11 +18,17 @@ const isMuted = ref(!settings.use_type_sound && !settings.use_beep_sound);
 </script>
 
 <template>
-    <div>
-        <Play :sentences="sentences" :volume="volume" />
-        <div class="flex mt-4">
-            <img :src="volume > 0 ? '/icons/volume-on.png' : '/icons/volume-off.png'" alt="" class="h-8">
-            <input v-if="!isMuted" type="range" v-model="volume" min="0" max="1" step="0.01" class="ml-3 accent-black" />
+    <label for="sp-input">
+        <div>
+            <input class="absolute opacity-0 top-[-1000px] w-1 h-1 z-[-1]" id="sp-input" type="text" />
+            <Play :sentences="sentences" :volume="volume" />
+            <div class="flex mt-4 items-end justify-between">
+                <div class="flex">
+                    <img :src="volume > 0 ? '/icons/volume-on.png' : '/icons/volume-off.png'" alt="" class="h-8">
+                    <input v-if="!isMuted" type="range" v-model="volume" min="0" max="1" step="0.01"
+                        class="ml-3 accent-black" />
+                </div>
+            </div>
         </div>
-    </div>
+    </label>
 </template>

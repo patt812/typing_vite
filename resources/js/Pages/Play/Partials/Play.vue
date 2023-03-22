@@ -89,26 +89,25 @@ onUnmounted(() => {
 <template>
     <div>
         <div v-show="!typing.isStarted && !typing.isFinished">
-            {{ typing.dialog ? typing.dialog : typing.DEFAULT_GAME_DIALOG }}
+            <div>{{ typing.dialog ? typing.dialog : typing.DEFAULT_GAME_DIALOG }}</div>
+            <div class="lg:hidden">ここをタップするとキーボードが出ます</div>
         </div>
 
         <div v-if="typing.isStarted && !typing.isFinished">
-            <div class="text-lg">
+            <div class="text-lg w-full overflow-hidden">
                 {{ typing.sentence.sentences[typing.sentence.current] }}
             </div>
             <div class="text-lg">
                 {{ typing.sentence.kanasDisplay[typing.sentence.current] }}
             </div>
-            <div class="text-lg">
-                <span>{{
-                    typing.sentence.displayRoma.slice(0, typing.statistics.correct)
-                }}</span><span class="opacity-40">{{ typing.sentence.displayRoma.slice(typing.statistics.correct) }}
-                </span>
+            <div ref="roma" id="c" class="text-lg w-full overflow-hidden">
+                <span ref="finishedSpan">{{ finishedRoma }}</span>
+                <span ref="unfinishedSpan" class="opacity-40">{{ unfinishedRoma }}</span>
             </div>
             <div>{{ typing.countDown }}</div>
 
 
-            <div class="mt-32">
+            <div class="hidden sm:block md:mt-32">
                 <div class="flex flex-wrap">
                     <div class="mt-3 mb-3 flex items-center">
                         <div>{{ typing.statistics.time }}</div>
@@ -129,7 +128,19 @@ onUnmounted(() => {
 
                 <Keyboard :correct="correctKey" />
             </div>
+            <div class="sm:hidden md:mt-32">
+                <div class="mt-3 mb-3">
+                    <div>{{ typing.statistics.time }}</div>
+                    <div>現在WPM：{{ typing.statistics.currentWPM }}</div>
+                    <div>現在成功率：{{ typing.statistics.calcAccuracy(typing.statistics.correct,
+                        typing.statistics.mistake) }}%</div>
+                    <div>合計WPM：{{ typing.statistics.totalWPM }}</div>
+                    <div>合計成功率：{{ typing.statistics.calcAccuracy(typing.statistics.totalCorrect,
+                        typing.statistics.totalMistake) }}%</div>
+                </div>
+            </div>
         </div>
+
 
         <div v-if="!typing.isStarted && typing.isFinished">
             <div class="mb-4">
