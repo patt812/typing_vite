@@ -77,7 +77,7 @@ export default class Game {
       return;
     }
 
-    this.typing.performJudge(event.key);
+    this.typing.performJudge(event.key.toLowerCase());
     if (!this.typing.judge.isCorrect) {
         if (this.typing.use_beep_sound) {
             this.typing.beepSound.load();
