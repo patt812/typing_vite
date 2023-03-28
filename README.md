@@ -23,6 +23,7 @@
 - MySQL 8.0.32
 - Vue 3.2.31
 - Vite 4.0.0
+- TailWindCSS 3.1.0
 - Nginx
 - [Docker](https://github.com/ucan-lab/docker-laravel)
 - AWS
@@ -46,3 +47,6 @@ VITE_TYPING_SOUND_BEEP=/sounds/beep.mp3
 DEFAULT_AUTOCOMPLETE_SENTENCES=15
 ```
 
+## Special Thanks
+- [orion](https://www.orioniconlibrary.com/icon/grab-hand-1538?from=query&name=grab)（ロゴ、サイト内のアイコン）
+- [On-Jin〜音人〜](https://on-jin.com/)（本番環境のタイプ、ビープ音）
