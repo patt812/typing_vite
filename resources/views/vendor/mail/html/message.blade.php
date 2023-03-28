@@ -2,7 +2,6 @@
 {{-- Header --}}
 <x-slot:header>
 <x-mail::header :url="config('app.url')">
-{{ config('app.name') }}
 </x-mail::header>
 </x-slot:header>
 
@@ -21,7 +20,7 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-© {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+(C) {{ date('Y') }} {{ config('app.name') }} @lang('All rights reserved.')
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>
