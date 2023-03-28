@@ -23,6 +23,7 @@
 - MySQL 8.0.32
 - Vue 3.2.31
 - Vite 4.0.0
+- TailWindCSS 3.1.0
 - Nginx
 - [Docker](https://github.com/ucan-lab/docker-laravel)
 - AWS
