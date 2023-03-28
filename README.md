@@ -35,3 +35,14 @@
 ローカルで動かしてみる場合は、サインアップ時に登録される文章を定義するファイル[resources/sentence/template.json.example](https://github.com/patt812/typing_vite/blob/de2dcbfc0e7c47afd0076c320a9d2882cb28b2b7/resources/sentence/template.json.example)と、入力パターンを定義するファイル[resources/js/Typing/romaPatterns.js.example](https://github.com/patt812/typing_vite/blob/de2dcbfc0e7c47afd0076c320a9d2882cb28b2b7/resources/js/Typing/romaPatterns.js.example)の編集が必要です。
 
 リンク先のファイルを参考にコピーして.exampleを外し、任意の値を書き込んでください。
+
+.envは下記がアプリ固有です。
+```
+# タイピング正解時の効果音（絶対パス）
+VITE_TYPING_SOUND_TYPE=/sounds/type.mp3
+# タイピングミス時の効果音（絶対パス）
+VITE_TYPING_SOUND_BEEP=/sounds/beep.mp3
+# サインアップ時の登録文章数
+DEFAULT_AUTOCOMPLETE_SENTENCES=15
+```
+
