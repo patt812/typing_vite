@@ -24,7 +24,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="登録" />
 
     <AuthenticationCard>
         <template #logo>
