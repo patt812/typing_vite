@@ -86,7 +86,11 @@ watch(() => typing.value.isFinished, (isFinished) => {
         const result = typing.value.result;
         const stats = typing.value.statistics;
         stats.totalWPM = typing.value.statistics.getTotalWPM();
-        Inertia.post(route('play.store'), { result, stats });
+        const form = useForm({
+            result: result,
+            stats: stats,
+        });
+        form.post(route('play.store'));
     }
 });
 
