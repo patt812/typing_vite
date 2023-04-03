@@ -45,13 +45,20 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current-password'],
-        ]);
-
         $user = $request->user();
 
-        Auth::logout();
+
+        $user->sentences()->delete();
+
+        $settings = $user->settings;
+
+        if ($settings) {
+            $settings->setting_preferences()->delete();
+            $settings->setting_plays()->delete();
+
+            $settings->delete();
+        }
+        $user->total_stats()->delete();
 
         $user->delete();
 

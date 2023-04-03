@@ -19,7 +19,7 @@ const confirmUserDeletion = () => {
 };
 
 const deleteUser = () => {
-    form.delete(route('current-user.destroy'), {
+    form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
