@@ -39,7 +39,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = Auth::user();
         if ($user) {
-            $user = Auth::user()->with(['settings.setting_preferences', 'settings.setting_plays'])->first();
+            $user->load(['settings.setting_preferences', 'settings.setting_plays']);
         }
 
         return array_merge(parent::share($request), [

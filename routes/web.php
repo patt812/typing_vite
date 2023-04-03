@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TypingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -44,4 +45,7 @@ Route::middleware([
     Route::delete('/stats/all/reset', [TypingController::class, 'resetAllStats'])->name('stats.reset.all');
 
     Route::put('/settings/sound/{setting_play}', [TypingController::class,'setSound'])->name('settings.sound');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
