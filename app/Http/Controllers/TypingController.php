@@ -29,19 +29,15 @@ class TypingController extends Controller
     public function showSentence(Request $request)
     {
         $sentences = Auth::user()->sentences;
-        $flush_message = $request->session()->get('flush_message');
 
         return Inertia::render('Sentence/Show', [
             'sentences' => $sentences,
-            'status' => $flush_message
         ]);
     }
 
     public function showPreference(Request $request)
     {
         $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
-
-        $flush_message = $request->session()->get('flush_message');
 
         return Inertia::render('Preference/Show', [
             'sentences' => $sentences,
