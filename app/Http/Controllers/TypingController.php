@@ -237,13 +237,13 @@ class TypingController extends Controller
     public function storePreference(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'sentences' => ['required', 'numeric'],
+            'sentences' => ['required', 'numeric', 'min:1'],
             'prior_no_stats' => ['required'],
-            'is_random' => ['required', 'boolean',],
-            'min_accuracy' => ['nullable', 'numeric'],
-            'max_accuracy' => ['nullable', 'numeric'],
-            'min_wpm' => ['nullable', 'numeric'],
-            'max_wpm' => ['nullable', 'numeric'],
+            'is_random' => ['required', 'boolean'],
+            'min_accuracy' => ['nullable', 'numeric', 'min:0'],
+            'max_accuracy' => ['nullable', 'numeric', 'min:0'],
+            'min_wpm' => ['nullable', 'numeric', 'min:0'],
+            'max_wpm' => ['nullable', 'numeric', 'min:0'],
         ]);
         $validator->validate();
 
