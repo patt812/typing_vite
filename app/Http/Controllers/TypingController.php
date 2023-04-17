@@ -29,19 +29,15 @@ class TypingController extends Controller
     public function showSentence(Request $request)
     {
         $sentences = Auth::user()->sentences;
-        $flush_message = $request->session()->get('flush_message');
 
         return Inertia::render('Sentence/Show', [
             'sentences' => $sentences,
-            'status' => $flush_message
         ]);
     }
 
     public function showPreference(Request $request)
     {
         $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
-
-        $flush_message = $request->session()->get('flush_message');
 
         return Inertia::render('Preference/Show', [
             'sentences' => $sentences,
@@ -184,9 +180,15 @@ class TypingController extends Controller
         ]);
         $validator->validate();
 
+        $user_id = Auth::id();
         $sentence = Sentence::find($request->id);
+
+        if ($sentence->user_id != $user_id) {
+            abort(403);
+        }
+
         $sentence->fill([
-            'user_id' => Auth::id(),
+            'user_id' => $user_id,
             'sentence' => $request->sentence,
             'kana' => $request->kana,
         ])->update();
@@ -196,7 +198,11 @@ class TypingController extends Controller
 
     public function deleteSentence(Request $request)
     {
-        Sentence::find($request->id)->delete();
+        $sentence = Sentence::find($request->id);
+        if ($sentence->user_id != Auth::id()) {
+            abort(403);
+        }
+        $sentence->delete();
         session()->flash('message', '削除しました。');
     }
 
@@ -241,13 +247,13 @@ class TypingController extends Controller
     public function storePreference(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'sentences' => ['required', 'numeric'],
+            'sentences' => ['required', 'numeric', 'min:1'],
             'prior_no_stats' => ['required'],
-            'is_random' => ['required', 'boolean',],
-            'min_accuracy' => ['nullable', 'numeric'],
-            'max_accuracy' => ['nullable', 'numeric'],
-            'min_wpm' => ['nullable', 'numeric'],
-            'max_wpm' => ['nullable', 'numeric'],
+            'is_random' => ['required', 'boolean'],
+            'min_accuracy' => ['nullable', 'numeric', 'min:0'],
+            'max_accuracy' => ['nullable', 'numeric', 'min:0'],
+            'min_wpm' => ['nullable', 'numeric', 'min:0'],
+            'max_wpm' => ['nullable', 'numeric', 'min:0'],
         ]);
         $validator->validate();
 
