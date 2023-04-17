@@ -180,9 +180,15 @@ class TypingController extends Controller
         ]);
         $validator->validate();
 
+        $user_id = Auth::id();
         $sentence = Sentence::find($request->id);
+
+        if ($sentence->user_id != $user_id) {
+            abort(403);
+        }
+
         $sentence->fill([
-            'user_id' => Auth::id(),
+            'user_id' => $user_id,
             'sentence' => $request->sentence,
             'kana' => $request->kana,
         ])->update();
@@ -192,7 +198,11 @@ class TypingController extends Controller
 
     public function deleteSentence(Request $request)
     {
-        Sentence::find($request->id)->delete();
+        $sentence = Sentence::find($request->id);
+        if ($sentence->user_id != Auth::id()) {
+            abort(403);
+        }
+        $sentence->delete();
         session()->flash('message', '削除しました。');
     }
 
