@@ -1,6 +1,6 @@
 <script setup>
 import Play from '@/Pages/Play/Partials/Play.vue'
-import { usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/inertia-vue3';
 import { ref } from 'vue';
 
 defineProps({
@@ -9,7 +9,7 @@ defineProps({
     sentences: Array,
 });
 
-const settings = usePage().props.user.settings.setting_plays;
+const settings = usePage().props.value.user.settings.setting_plays;
 
 const volume = ref(settings.volume);
 

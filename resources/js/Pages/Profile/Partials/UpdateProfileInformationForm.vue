@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Link, router, useForm, usePage } from '@inertiajs/inertia-vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
@@ -34,7 +34,7 @@ const updateProfileInformation = () => {
         preserveScroll: true,
         onSuccess: () => {
             clearPhotoFileInput();
-            usePage().props.flash.message = 'プロフィールを更新しました。';
+            usePage().props.value.flash.message = 'プロフィールを更新しました。';
         },
     });
 };

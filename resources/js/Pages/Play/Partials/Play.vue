@@ -1,10 +1,9 @@
 <script setup>
 import Typing from '@/Typing/typing.js'
-import { router } from '@inertiajs/core';
 import { ref } from '@vue/reactivity';
 import { onMounted, onUnmounted, watch } from '@vue/runtime-core';
 import { Inertia } from '@inertiajs/inertia';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import Keyboard from '@/Pages/Play/Partials/Keyboard.vue';
 import { computed } from '@vue/reactivity';
 import SpeedMeter from '@/Pages/Play/Partials/SpeedMeter.vue';
@@ -17,7 +16,7 @@ const props = defineProps({
     volume: Number,
 });
 
-const settings = usePage().props.user.settings.setting_plays;
+const settings = usePage().props.value.user.settings.setting_plays;
 
 const typing = ref(new Typing({
     volume: props.volume,
@@ -67,7 +66,7 @@ const getStats = (i) => {
 };
 
 const getSentence = (counts) => {
-    router.visit(route('sentences', { num: 3 }), {
+    Inertia.visit(route('sentences', { num: 3 }), {
         only: ['sentences', 'filled'],
         onSuccess: () => {
             typing.value.isPlayable = true;

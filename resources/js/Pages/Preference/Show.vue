@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, ref } from '@vue/runtime-core';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -12,7 +12,7 @@ import SentenceList from '@/Pages/Sentence/Partials/SentenceList.vue'
 import ContentFrame from '@/Components/ContentFrame.vue';
 import RadioInput from '@/Components/RadioInput.vue';
 
-const user = usePage().props.user;
+const user = usePage().props.value.user;
 
 const props = defineProps({
     sentences: Array,
@@ -33,7 +33,7 @@ const store = () => {
 
 const storeSentence = () => {
     error.value = ''
-    usePage().props.flash.message = '';
+    usePage().props.value.flash.message = '';
 
     if (isNoSentenceSelected.value) {
         return error.value = '文章は１つ以上選択してください'

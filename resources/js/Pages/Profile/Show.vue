@@ -9,7 +9,7 @@ import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfile
 import InputLabel from '@/Components/InputLabel.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ContentFrame from '@/Components/ContentFrame.vue';
 
@@ -18,7 +18,7 @@ defineProps({
     sessions: Array,
 });
 
-const settings = usePage().props.user.settings;
+const settings = usePage().props.value.user.settings;
 
 const form = useForm(settings.setting_plays);
 
