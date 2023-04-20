@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, ref } from '@vue/runtime-core';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Modal from '@/Components/Modal.vue';
