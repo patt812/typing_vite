@@ -1,0 +1,29 @@
+{
+    "php-cs-fixer.onsave": true,
+    "php-cs-fixer.config": "./.php-cs-fixer.dist.php;./.php-cs-fixer.php;./.php_cs;./.php_cs.dist",
+    "php-cs-fixer.rules": "@PSR12",
+    "phpcs.standard": "phpcs.xml",
+    "phpcs.executablePath": "./vendor/bin/phpcs",
+    "eslint.validate": [
+        "javascript",
+        "vue"
+    ],
+    "editor.formatOnSave": true,
+    "[vue]": {
+        "editor.formatOnSave": false
+    },
+    "[javascript]": {
+        "editor.formatOnSave": false
+    },
+    "[css]": {
+        "editor.formatOnSave": false
+    },
+    "[php]": {
+        "editor.defaultFormatter": "junstyle.php-cs-fixer"
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.php": true,
+        "source.fixAll.eslint": true,
+        "source.fixAll": true
+    },
+}

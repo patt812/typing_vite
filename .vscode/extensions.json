@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "vue.volar",
+        "wayou.vscode-todo-highlight",
+        "shardulm94.trailing-spaces",
+        "bradlc.vscode-tailwindcss",
+        "junstyle.php-cs-fixer",
+        "shevaua.phpcs",
+        "dbaeumer.vscode-eslint",
+        "Orta.vscode-jest"
+    ],
+    "unwantedRecommendations": [
+        "octref.vetur"
+    ]
+}
