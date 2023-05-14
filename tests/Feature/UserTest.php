@@ -2,10 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Models\Sentence;
-use App\Models\Setting;
 use App\Models\User;
-use App\Models\UserStat;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -36,7 +33,7 @@ class UserTest extends TestCase
             'user_id' => $this->user->id,
         ]);
 
-        $this->assertCount(env("DEFAULT_AUTOCOMPLETE_SENTENCES", 5), $this->user->sentences);
+        $this->assertCount(env('DEFAULT_AUTOCOMPLETE_SENTENCES', 5), $this->user->sentences);
     }
 
     public function test_prepare_sentences()

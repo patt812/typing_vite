@@ -3,11 +3,12 @@
 declare(strict_types=1);
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude(['vendor', 'config'])
+    ->exclude(['vendor'])
     ->in([
         __DIR__ . '/app',
         __DIR__ . '/database/factories',
         __DIR__ . '/database/seeders',
+        __DIR__ . '/config',
         __DIR__ . '/routes',
         __DIR__ . '/tests',
     ]);
@@ -41,7 +42,8 @@ return $config
         'no_blank_lines_after_phpdoc' => true,
         'phpdoc_trim_consecutive_blank_line_separation' => true,
         'no_extra_blank_lines' => true,
-        // risky
+        'concat_space' => ['spacing' => 'one'],
+        // risky options
         'array_push' => true,
         'ereg_to_preg' => true,
     ])

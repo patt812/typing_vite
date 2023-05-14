@@ -69,7 +69,7 @@ class TypingController extends Controller
         $sentences = Sentence::whereIn('id', $result['ids'])->get();
         $inserts = [];
 
-        for ($i=0; $i < count($result['ids']); $i++) {
+        for ($i = 0; $i < count($result['ids']); $i++) {
             $stat = [];
             $key = $sentences->search(function ($item) use ($result, $i) {
                 return $item->id === $result['ids'][$i];
@@ -110,24 +110,24 @@ class TypingController extends Controller
             }
         }
 
-        $total_stats = $request->stats;
-        DB::transaction(function () use ($inserts, $total_stats, $result) {
+        $totalStats = $request->stats;
+        DB::transaction(function () use ($inserts, $totalStats, $result) {
             $user_stats = UserStat::where('user_id', Auth::id())->first();
             if (!$user_stats->played) {
-                $accuracy = $total_stats['accuracy'];
-                $wpm = $total_stats['totalWPM'];
+                $accuracy = $totalStats['accuracy'];
+                $wpm = $totalStats['totalWPM'];
             } else {
-                $accuracy = ($user_stats->accuracy + $total_stats['accuracy']) / 2;
-                $wpm = ($user_stats->wpm + $total_stats['totalWPM']) / 2;
+                $accuracy = ($user_stats->accuracy + $totalStats['accuracy']) / 2;
+                $wpm = ($user_stats->wpm + $totalStats['totalWPM']) / 2;
             }
 
             $user_stats->fill([
                 'played' => $user_stats->played + 1,
-                'typed' => $user_stats->typed + $total_stats['totalCorrect'] + $total_stats['totalMistake'],
+                'typed' => $user_stats->typed + $totalStats['totalCorrect'] + $totalStats['totalMistake'],
                 'accuracy' => $accuracy,
                 'wpm' => $wpm,
                 'max_wpm' => max(array_merge([$user_stats->max_wpm], $result['avarages'])),
-                'played_seconds' => $user_stats->played_seconds + $total_stats['time']
+                'played_seconds' => $user_stats->played_seconds + $totalStats['time'],
             ])->save();
 
             Stats::insert($inserts);
@@ -230,7 +230,7 @@ class TypingController extends Controller
             $sentences = Sentence::where('user_id', $user->id)->pluck('id')->toArray();
             Stats::whereIn('sentence_id', $sentences)->delete();
 
-            $user->total_stats()->update([
+            $user->totalStats()->update([
                 'played' => 0,
                 'typed' => 0,
                 'accuracy' => 0,
@@ -242,7 +242,6 @@ class TypingController extends Controller
 
         session()->flash('message', '削除しました。');
     }
-
 
     public function storePreference(Request $request)
     {
@@ -277,7 +276,7 @@ class TypingController extends Controller
         DB::transaction(function () use ($update) {
             SettingPreference::updateOrInsert(
                 ['setting_id' => Auth::user()->settings->id],
-                $update
+                $update,
             );
         });
 
@@ -300,12 +299,12 @@ class TypingController extends Controller
         Sentence::whereIn('id', $selected)->where('user_id', Auth::id())
             ->update([
                 'is_selected' => 1,
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
         Sentence::whereIn('id', $unselected)->where('user_id', Auth::id())
             ->update([
                 'is_selected' => 0,
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
 
         session()->flash('message', '更新しました。');

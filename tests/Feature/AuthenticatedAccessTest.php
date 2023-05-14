@@ -3,11 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Inertia\Testing\AssertableInertia;
+use Tests\TestCase;
 
 class AuthenticatedAccessTest extends TestCase
 {
@@ -15,7 +13,7 @@ class AuthenticatedAccessTest extends TestCase
 
     private $user;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
@@ -32,10 +30,11 @@ class AuthenticatedAccessTest extends TestCase
         $response = $this->get(route('dashboard'));
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('Dashboard')
-            ->has('sentences')
-            ->where('filled', false)
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Dashboard')
+                ->has('sentences')
+                ->where('filled', false),
         );
     }
 
@@ -49,9 +48,10 @@ class AuthenticatedAccessTest extends TestCase
         $response = $this->get(route('preference'));
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('Preference/Show')
-            ->has('sentences')
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Preference/Show')
+                ->has('sentences'),
         );
     }
 
@@ -65,9 +65,10 @@ class AuthenticatedAccessTest extends TestCase
         $response = $this->get(route('sentence'));
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('Sentence/Show')
-            ->has('sentences')
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Sentence/Show')
+                ->has('sentences'),
         );
     }
 
@@ -81,10 +82,11 @@ class AuthenticatedAccessTest extends TestCase
         $response = $this->get(route('stats'));
 
         $response->assertStatus(200);
-        $response->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('Stats/Show')
-            ->has('sentences')
-            ->has('userStats')
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+                ->component('Stats/Show')
+                ->has('sentences')
+                ->has('userStats'),
         );
     }
 

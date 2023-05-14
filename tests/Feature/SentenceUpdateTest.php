@@ -16,7 +16,7 @@ class SentenceUpdateTest extends TestCase
 
     private Sentence $sentence;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();

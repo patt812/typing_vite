@@ -11,7 +11,8 @@ class Stats extends Model
 
     protected $table = 'sentence_stats';
 
-    public function stat() {
+    public function stat()
+    {
         return $this->hasOne(Sentence::class);
     }
 }

@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TypingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,14 +37,15 @@ Route::middleware([
 
     Route::get('/preference', [TypingController::class, 'showPreference'])->name('preference');
     Route::put('/preference/store', [TypingController::class, 'storePreference'])->name('preference.store');
-    Route::put('/preference/store/sentence', [TypingController::class, 'storeSentencePreference'])->name('preference.sentence.store');
+    Route::put('/preference/store/sentence', [TypingController::class, 'storeSentencePreference'])
+        ->name('preference.sentence.store');
 
     Route::get('/stats', [TypingController::class, 'showStats'])->name('stats');
     Route::delete('/stats/reset/{sentence}', [TypingController::class, 'resetStat'])->name('stats.reset');
     Route::delete('/stats/all/reset', [TypingController::class, 'resetAllStats'])->name('stats.reset.all');
 
-    Route::put('/settings/sound/{setting_play}', [TypingController::class,'setSound'])->name('settings.sound');
+    Route::put('/settings/sound/{setting_play}', [TypingController::class, 'setSound'])
+        ->name('settings.sound');
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });

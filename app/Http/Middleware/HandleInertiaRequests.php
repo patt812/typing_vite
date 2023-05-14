@@ -39,14 +39,14 @@ class HandleInertiaRequests extends Middleware
     {
         $user = Auth::user();
         if ($user) {
-            $user->load(['settings.setting_preferences', 'settings.setting_plays']);
+            $user->load(['settings.settingPreferences', 'settings.settingPlays']);
         }
 
         return array_merge(parent::share($request), [
             'app_name' => env('APP_NAME', 'Laravel'),
             'user' => $user,
             'flash' => [
-                'message' => fn () => $request->session()->get('message')
+                'message' => fn () => $request->session()->get('message'),
             ],
             'is_production' => app()->isProduction(),
         ]);

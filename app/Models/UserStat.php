@@ -16,7 +16,7 @@ class UserStat extends Model
         'accuracy',
         'wpm',
         'max_wpm',
-        'played_seconds'
+        'played_seconds',
     ];
 
     public $timestamps = false;

@@ -7,12 +7,14 @@
     <arg value="ps" />
 
     <!-- ルール全て除外 -->
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/migrations/*</exclude-pattern>
     <exclude-pattern>*/bootstrap/cache/*</exclude-pattern>
     <exclude-pattern>*/public/*</exclude-pattern>
     <exclude-pattern>*/storage/*</exclude-pattern>
     <exclude-pattern>*.blade.php</exclude-pattern>
+    <exclude-pattern>*/lang/*</exclude-pattern>
 
     <rule ref="PSR12" />
 
@@ -92,9 +94,6 @@
 
     <!-- セミコロン前の空白を検出する -->
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing" />
-
-    <!-- ""が不要な場合は''に統一する -->
-    <rule ref="Squiz.Strings.DoubleQuoteUsage" />
 
     <!-- ""内に変数があることを許可する -->
     <rule ref="Squiz.Strings.DoubleQuoteUsage.ContainsVar">

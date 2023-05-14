@@ -54,6 +54,16 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "dry-fix": [
+            "./vendor/bin/php-cs-fixer fix --diff --dry-run --allow-risky=yes"
+        ],
+        "fix": [
+            "./vendor/bin/php-cs-fixer fix --diff --allow-risky=yes"
+        ],
+        "lint": [
+            "./vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes --using-cache=no",
+            "./vendor/bin/phpcs --standard=phpcs.xml --encoding=utf-8 -p -s -v -n ."
         ]
     },
     "extra": {

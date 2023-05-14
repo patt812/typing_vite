@@ -6,7 +6,6 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,18 +46,17 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-
         $user->sentences()->delete();
 
         $settings = $user->settings;
 
         if ($settings) {
-            $settings->setting_preferences()->delete();
-            $settings->setting_plays()->delete();
+            $settings->settingPreferences()->delete();
+            $settings->settingPlays()->delete();
 
             $settings->delete();
         }
-        $user->total_stats()->delete();
+        $user->totalStats()->delete();
 
         $user->delete();
 

@@ -9,13 +9,14 @@ class Sentence extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','sentence', 'kana'];
+    protected $fillable = ['user_id', 'sentence', 'kana'];
 
     protected $casts = [
-        'is_selected' => 'bool'
+        'is_selected' => 'bool',
     ];
 
-    public function stat() {
+    public function stat()
+    {
         return $this->hasOne(Stats::class);
     }
 }
