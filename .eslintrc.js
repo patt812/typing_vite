@@ -8,11 +8,9 @@ module.exports = {
     'airbnb-base',
   ],
   globals: {
-    // Inertia等の組み込み関数をエラーにしない
     route: true,
     axios: true,
   },
-  overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -22,7 +20,10 @@ module.exports = {
     'unused-imports',
   ],
   rules: {
+    'import/no-extraneous-dependencies': 'off',
     'unused-imports/no-unused-imports': 'error',
+    'no-continue': 'off',
+    'no-restricted-syntax': 'off',
     'vue/max-attributes-per-line': ['error', { singleline: 6, multiline: { max: 16 } }],
     'unused-imports/no-unused-vars': [
       'off',
