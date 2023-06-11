@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             'App\Verify\Service',
-            'App\Services\Twilio\Verification'
+            'App\Services\Twilio\Verification',
         );
     }
 

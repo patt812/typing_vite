@@ -80,7 +80,10 @@ class ResetPassword extends Notification
             ->salutation(config('app.name'))
             ->line(Lang::get('パスワードをリセットするには、下記のボタンを押してください。'))
             ->action(Lang::get('リセット画面へ'), $url)
-            ->line(Lang::get('このリンクは:count分後に無効化されます。', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
+            ->line(Lang::get(
+                'このリンクは:count分後に無効化されます。',
+                ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')],
+            ))
             ->line(Lang::get('このメールに覚えがない方は、お手数ですが破棄してください。'));
     }
 

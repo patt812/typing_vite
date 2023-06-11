@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Sentence;
 use App\Models\Stats;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class StatsResetTest extends TestCase
@@ -15,7 +14,7 @@ class StatsResetTest extends TestCase
 
     private $user;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
@@ -50,7 +49,9 @@ class StatsResetTest extends TestCase
     public function test_can_reset_all_stats_for_user()
     {
         $sentences = Sentence::where('user_id', $this->user->id)->get();
-        $stats = $sentences->each(fn ($sentence) => Stats::factory()->create(['sentence_id' => $sentence->id]));
+        $stats = $sentences->each(fn ($sentence) => Stats::factory()->create([
+            'sentence_id' => $sentence->id,
+        ]));
 
         $response = $this->delete(route('stats.reset.all'));
 

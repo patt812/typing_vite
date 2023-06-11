@@ -18,12 +18,12 @@ class Setting extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function setting_preferences()
+    public function settingPreferences()
     {
         return $this->hasOne(SettingPreference::class, 'setting_id', 'id');
     }
 
-    public function setting_plays()
+    public function settingPlays()
     {
         return $this->hasOne(SettingPlay::class, 'setting_id', 'id');
     }

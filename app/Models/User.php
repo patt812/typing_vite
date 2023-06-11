@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Notifications\ResetPassword;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -73,18 +72,18 @@ class User extends Authenticatable
         parent::boot();
 
         static::created(function ($user) {
-            $user->total_stats()->create([
+            $user->totalStats()->create([
                 'user_id' => $user->id,
             ]);
             $settings = $user->settings()->create([
                 'user_id' => $user->id,
             ]);
-            $user->settings->setting_preferences()->create([
+            $user->settings->settingPreferences()->create([
                 'setting_id' => $settings->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-            $user->settings->setting_plays()->create([
+            $user->settings->settingPlays()->create([
                 'setting_id' => $settings->id,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -104,7 +103,7 @@ class User extends Authenticatable
         return $this->hasMany(Sentence::class);
     }
 
-    public function total_stats()
+    public function totalStats()
     {
         return $this->hasOne(UserStat::class);
     }
@@ -117,10 +116,10 @@ class User extends Authenticatable
     public function prepareSentences()
     {
         $user = Auth::user();
-        $settings = $user->settings->setting_preferences;
+        $settings = $user->settings->settingPreferences;
 
         $query = $this->sentences()->leftJoin('sentence_stats as stats', 'sentences.id', 'sentence_id')
-                ->where('user_id', $user->id);
+            ->where('user_id', $user->id);
 
         // 統計のない文章を出題するか
         if ($settings->prior_no_stats < 2) {
@@ -131,7 +130,12 @@ class User extends Authenticatable
         }
 
         // 統計の情報で制限するか（統計のない文章を優先する場合は未出題のヒット数が規定の出題数を超えていないこと）
-        if (($settings->prior_no_stats == 2 || ($settings->prior_no_stats < 2 && $query->count() < $settings->sentences))) {
+        if (
+            (
+                $settings->prior_no_stats == 2
+                || ($settings->prior_no_stats < 2 && $query->count() < $settings->sentences)
+            )
+        ) {
             $query->orWhere(function ($sub) use ($settings, $user) {
                 if ($settings->limit_wpm) {
                     if ($settings->min_wpm != null) {
@@ -164,7 +168,7 @@ class User extends Authenticatable
         // ヒットが出題数より足りない場合は補填
         if (!count($sentences)) {
             $query = $this->sentences()->leftJoin('sentence_stats as stats', 'sentences.id', 'sentence_id')
-            ->where('user_id', $user->id);
+                ->where('user_id', $user->id);
 
             if ($settings->is_random) {
                 $query->inRandomOrder();

@@ -6,7 +6,7 @@ export default class Statistics {
     this.time = 0;
     this.previousTime = 0;
     this.thisStarttime = 0;
-    this.gameTime;
+    this.gameTime = 0;
     this.correct = 0;
     this.totalCorrect = 0;
     this.mistake = 0;
@@ -31,7 +31,6 @@ export default class Statistics {
     this.gameTime = setInterval(() => {
       this.time = ((performance.now() - this.previousTime) / 1000).toFixed(3);
     }, 50);
-
   }
 
   splitTimer() {
@@ -44,21 +43,22 @@ export default class Statistics {
 
   getTotalWPM() {
     const result = this.totalCorrect / (this.time / 60);
-    if (isNaN(result)) return 0;
-    if (!isFinite(result)) return 6000;
+    if (Number.isNaN(result)) return 0;
+    if (!Number.isFinite(result)) return 6000;
     return Number(result.toFixed(2));
   }
 
   // WPM = 区間正答数 / (区間経過秒数 / 60)
   getCurrentWPM() {
     const result = this.correct / ((this.time - this.thisStarttime) / 60);
-    if (isNaN(result)) return 0;
-    if (!isFinite(result)) return 6000;
+    if (Number.isNaN(result)) return 0;
+    if (!Number.isFinite(result)) return 6000;
     return Number(result.toFixed(2));
   }
 
+  // eslint-disable-next-line class-methods-use-this
   calcAccuracy(correct, mistake) {
-    if (correct + mistake == 0) return 100;
+    if (correct + mistake === 0) return 100;
     if (correct === 0 || correct <= mistake) return 0;
     const accuracy = (((correct - mistake) * 100) / correct).toFixed(2);
     return Number(accuracy);
@@ -66,14 +66,15 @@ export default class Statistics {
 
   afterJudge(isCorrect) {
     if (isCorrect) {
-      this.totalCorrect++;
-      this.accuracy = this.calcAccuracy(++this.correct, this.mistake);
+      this.totalCorrect += 1;
+      this.correct += 1;
+      this.accuracy = this.calcAccuracy(this.correct, this.mistake);
       this.currentWPM = this.getCurrentWPM(this.correct, this.mistake);
       this.totalWPM = this.getTotalWPM(this.totalCorrect, this.totalMistake);
     } else {
-      this.mistake++;
-      this.totalMistake++;
-      this.missStreak++;
+      this.mistake += 1;
+      this.totalMistake += 1;
+      this.missStreak += 1;
       if (this.maxMissStreak < this.missStreak) {
         this.maxMissStreak = this.missStreak;
       }

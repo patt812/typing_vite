@@ -13,7 +13,7 @@ class SentenceRegistrationTest extends TestCase
 
     private $user;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();

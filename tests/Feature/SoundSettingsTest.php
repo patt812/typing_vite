@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\SettingPlay;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class SoundSettingsTest extends TestCase
@@ -24,7 +22,7 @@ class SoundSettingsTest extends TestCase
     public function test_set_sound()
     {
         $setting = $this->user->settings;
-        $setting_play = $setting->setting_plays;
+        $setting_play = $setting->settingPlays;
 
         $data = [
             'use_type_sound' => true,

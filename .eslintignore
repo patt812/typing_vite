@@ -1,0 +1,8 @@
+node_modules
+vendor
+public
+
+resources/js/app.js
+resources/js/bootstrap.js
+tailwind.config.js
+vite.config.js

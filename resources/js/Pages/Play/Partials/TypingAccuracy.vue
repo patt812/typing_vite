@@ -1,42 +1,42 @@
 <script setup>
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 
 const props = defineProps({
-    accuracy: {
-        type: Number,
-        default: 0,
-    },
+  accuracy: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const offset = computed(() => {
-    if (props.accuracy <= 0) {
-        return 251;
-    } else if (props.accuracy >= 100) {
-        return 0;
-    } else {
-        return (100 - props.accuracy) * 251 / 100;
-    }
-})
+  if (props.accuracy <= 0) {
+    return 251;
+  } if (props.accuracy >= 100) {
+    return 0;
+  }
+  return ((100 - props.accuracy) * 251) / 100;
+});
 
 </script>
 
 <template>
-    <div class="box select-none" :style="`stroke-dashoffset: ${offset};`">
-        <div class="percent" :style="`stroke-dashoffset: ${offset};`">
-            <svg>
-                <circle class="base" cx="45" cy="45" r="40"></circle>
-                <circle class="line" cx="45" cy="45" r="40" :style="`stroke-dashoffset: ${offset};`"></circle>
-            </svg>
-            <div class="number">
-                <div class="title">
-                    <span class="!text-2xl">{{ accuracy.toString().split('.')[0] }}</span>
-                    <span class="!text-sm">{{ accuracy.toString().split('.')[1] ? '.' + accuracy.toString().split('.')[1] :
-                        '' }}</span>
-                    <span class="!text-sm">%</span>
-                </div>
-            </div>
+  <div class="box select-none" :style="`stroke-dashoffset: ${offset};`">
+    <div class="percent" :style="`stroke-dashoffset: ${offset};`">
+      <svg>
+        <circle class="base" cx="45" cy="45" r="40" />
+        <circle class="line" cx="45" cy="45" r="40" :style="`stroke-dashoffset: ${offset};`" />
+      </svg>
+      <div class="number">
+        <div class="title">
+          <span class="!text-2xl">{{ accuracy.toString().split('.')[0] }}</span>
+          <span class="!text-sm">
+            {{ accuracy.toString().split('.')[1] ? '.' + accuracy.toString().split('.')[1] :
+              '' }}</span>
+          <span class="!text-sm">%</span>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
