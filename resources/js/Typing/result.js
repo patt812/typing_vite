@@ -1,6 +1,4 @@
-
 export default class Result {
-
   constructor() {
     this.ids = [];
     this.avarages = [];
@@ -18,42 +16,38 @@ export default class Result {
     this.waiting = new Set();
   }
 
-  popComma(base, concat) {
-    base = concat + ',' + base;
-    return base.slice(0, base.lastIndexOf(','));
+  static popComma(base, concat) {
+    const concatBase = `${concat},${base}`;
+    return concatBase.slice(0, concatBase.lastIndexOf(','));
   }
 
-  calcAverage(val) {
-    val = val.split(',');
-    const divisor = val.length - val.filter((item) => item === '0').length;
-    return val.reduce((sum, element) => {
-      return sum + parseInt(element);
-    }, 0) / divisor;
+  static calcAverage(val) {
+    const splitVal = val.split(',');
+    const divisor = splitVal.length - splitVal.filter((item) => item === '0').length;
+    return splitVal.reduce((sum, element) => sum + parseInt(element, 10), 0) / divisor;
   }
 
   update(i, missStreak, wpm, acc) {
-    this.recent5ACCs[i] =
-      this.popComma(this.recent5ACCs[i], Math.ceil(acc));
-    this.recent5WPMs[i] =
-      this.popComma(this.recent5WPMs[i], wpm);
-    this.accuracies[i] = this.calcAverage(this.recent5ACCs[i]);
-    this.avarages[i] = this.calcAverage(this.recent5WPMs[i]);
-    this.finisheds[i]++;
+    this.recent5ACCs[i] = Result.popComma(this.recent5ACCs[i], Math.ceil(acc));
+    this.recent5WPMs[i] = Result.popComma(this.recent5WPMs[i], wpm);
+    this.accuracies[i] = Result.calcAverage(this.recent5ACCs[i]);
+    this.avarages[i] = Result.calcAverage(this.recent5WPMs[i]);
+    this.finisheds[i] += 1;
     if (this.maxes[i] < wpm) {
       this.maxes[i] = wpm;
     }
     if (this.mins[i] === null || this.mins[i] > wpm) {
       this.mins[i] = wpm;
     }
-     if (this.missStreaks[i] == null || this.missStreaks[i] < missStreak) {
+    if (this.missStreaks[i] == null || this.missStreaks[i] < missStreak) {
       this.missStreaks[i] = missStreak;
     }
     if (Math.floor(acc) === 100) {
-      this.aveWpmPerfects[i] =
-        (this.aveWpmPerfects[i] + wpm) / ++this.perfects[i];
+      this.perfects[i] += 1;
+      this.aveWpmPerfects[i] = (this.aveWpmPerfects[i] + wpm) / this.perfects[i];
     } else {
-      this.aveWpmMistakes[i] = (this.aveWpmMistakes[i] + wpm) /
-        (this.finisheds[i] - this.perfects[i]);
+      this.aveWpmMistakes[i] = (this.aveWpmMistakes[i] + wpm)
+        / (this.finisheds[i] - this.perfects[i]);
     }
   }
 }

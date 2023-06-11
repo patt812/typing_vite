@@ -1,31 +1,29 @@
-import Statistics from './statistics.js';
-import Judge from './judge.js';
-import Sentence from './sentence.js';
-import Result from './result.js';
+import Statistics from './statistics';
+import Judge from './judge';
+import Sentence from './sentence';
+import Result from './result';
 
 export default class Game {
-
   constructor(settings = {}) {
     this.countdownSec = settings.countdown ? settings.countdown : 0;
-    console.log(settings);
     this.volume = settings.volume ? settings.volume : 0.5;
     this.use_type_sound = settings.use_type_sound ? settings.use_type_sound : false;
     this.use_beep_sound = settings.use_beep_sound ? settings.use_beep_sound : false;
     if (this.use_type_sound) {
-        this.typeSound = new Audio(import.meta.env.VITE_TYPING_SOUND_TYPE);
-        this.typeSound.volume = this.volume;
+      this.typeSound = new Audio(import.meta.env.VITE_TYPING_SOUND_TYPE);
+      this.typeSound.volume = this.volume;
     }
     if (this.use_beep_sound) {
-        this.beepSound = new Audio(import.meta.env.VITE_TYPING_SOUND_BEEP);
-        this.beepSound.volume = this.volume;
+      this.beepSound = new Audio(import.meta.env.VITE_TYPING_SOUND_BEEP);
+      this.beepSound.volume = this.volume;
     }
 
-    this.DEFAULT_GAME_DIALOG = "スペースキーを押してスタート";
+    this.DEFAULT_GAME_DIALOG = 'スペースキーを押してスタート';
     this.isPlayable = false;
     this.isStarted = false;
     this.isFinished = false;
     this.played = 0;
-    this.dialog = "";
+    this.dialog = '';
     this.sentencesDone = 1;
     this.judge = new Judge();
     this.sentence = new Sentence();
@@ -52,7 +50,7 @@ export default class Game {
   }
 
   async start(event) {
-    if (event.code === "Space" && !this.typing.isStarted && this.typing.isPlayable) {
+    if (event.code === 'Space' && !this.typing.isStarted && this.typing.isPlayable) {
       if (this.typing.countdownSec) {
         await this.typing.countdown(this.typing.countdownSec);
       }
@@ -60,47 +58,46 @@ export default class Game {
       if (!this.typing.played) {
         document.addEventListener('keydown', {
           handleEvent: this.typing.observe,
-          typing: this.typing
+          typing: this.typing,
         });
       }
-      this.typing.played++;
+      this.typing.played += 1;
       this.typing.statistics.startTimer();
     }
   }
 
   observe(event) {
-    if (!this.typing.isStarted || event.metaKey || event.ctrlKey || event.key == "F5") {
-        return;
+    if (!this.typing.isStarted || event.metaKey || event.ctrlKey || event.key === 'F5') {
+      return;
     }
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       this.typing.reset();
       return;
     }
 
     this.typing.performJudge(event.key.toLowerCase());
     if (!this.typing.judge.isCorrect) {
-        if (this.typing.use_beep_sound) {
-            this.typing.beepSound.load();
-            this.typing.beepSound.play();
-        }
+      if (this.typing.use_beep_sound) {
+        this.typing.beepSound.load();
+        this.typing.beepSound.play();
+      }
       return;
     }
     if (this.typing.use_type_sound) {
-        this.typing.typeSound.load();
-        this.typing.typeSound.play();
+      this.typing.typeSound.load();
+      this.typing.typeSound.play();
     }
 
-    if (this.typing.sentence.sentences.length == this.typing.sentence.current + 1
+    if (this.typing.sentence.sentences.length === this.typing.sentence.current + 1
       && this.typing.judge.goNext) {
-
       this.typing.statistics.stopTimer();
-      this.typing.sentence.current++;
+      this.typing.sentence.current += 1;
       this.typing.updateResult();
       this.typing.isStarted = false;
       this.typing.isPlayable = false;
       this.typing.isFinished = true;
       return;
-    } else if (this.typing.judge.goNext) {
+    } if (this.typing.judge.goNext) {
       this.typing.next();
       this.typing.statistics.splitTimer();
       return;
@@ -114,7 +111,7 @@ export default class Game {
   }
 
   reset() {
-    this.dialog = "";
+    this.dialog = '';
     this.isStarted = false;
     this.isPlayable = false;
     this.judge = new Judge();
@@ -126,16 +123,17 @@ export default class Game {
   next() {
     this.sentence.romas.shift();
     this.judge.goNext = false;
-    this.sentencesDone++;
-    this.sentence.current++;
+    this.sentencesDone += 1;
+    this.sentence.current += 1;
     this.updateResult();
     this.statistics.next();
     this.sentence.displayRoma = this.sentence.joinRoma();
   }
 
-
+  // eslint-disable-next-line camelcase
   updateResult(opt_escaped = false) {
-    const currentID = this.sentence.ids[this.sentence.current - 1];
+    // const currentID = this.sentence.ids[this.sentence.current - 1];
+    // eslint-disable-next-line camelcase
     if (!opt_escaped) {
       this.result.update(
         this.sentence.current - 1,
@@ -147,16 +145,17 @@ export default class Game {
   }
 
   async countdown(sec) {
-    for (let i = sec; i > 0; i--) {
+    for (let i = sec; i > 0; i -= 1) {
       this.dialog = i;
+      // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  };
+  }
 
   isStartKeyInput(input) {
-    const totalInputs = this.statistics.totalCorrect +
-      this.statistics.totalMistake;
-    return totalInputs == 0 && input == 'Space';
+    const totalInputs = this.statistics.totalCorrect
+      + this.statistics.totalMistake;
+    return totalInputs === 0 && input === 'Space';
   }
 
   changeVolume(volume) {

@@ -33,8 +33,7 @@ class AuthenticatedAccessTest extends TestCase
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
                 ->component('Dashboard')
-                ->has('sentences')
-                ->where('filled', false),
+                ->has('sentences'),
         );
     }
 
@@ -50,7 +49,7 @@ class AuthenticatedAccessTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Preference/Show')
+                ->component('Preference/ShowPreference')
                 ->has('sentences'),
         );
     }
@@ -67,7 +66,7 @@ class AuthenticatedAccessTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Sentence/Show')
+                ->component('Sentence/ShowSentence')
                 ->has('sentences'),
         );
     }
@@ -84,7 +83,7 @@ class AuthenticatedAccessTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Stats/Show')
+                ->component('Stats/ShowStats')
                 ->has('sentences')
                 ->has('userStats'),
         );

@@ -1,28 +1,28 @@
 <script setup>
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 
 const props = defineProps({
-    angle: {
-        type: Number,
-        default: 0,
-    },
+  angle: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const clampedAngle = computed(() => {
-    if (Number.isNaN(props.angle)) return - 90;
-    const angle = (props.angle / 600 * 90) - 90;
-    return Math.min(angle, 0);
+  if (Number.isNaN(props.angle)) return -90;
+  const angle = ((props.angle / 600) * 90) - 90;
+  return Math.min(angle, 0);
 });
 </script>
 
 <template>
-    <div class="wrap">
-        <div class="speed-meter">
-            <div class="circle">
-                <div class="needle" :style="`transform: rotate(${clampedAngle}deg)`"></div>
-            </div>
-        </div>
+  <div class="wrap">
+    <div class="speed-meter">
+      <div class="circle">
+        <div class="needle" :style="`transform: rotate(${clampedAngle}deg)`" />
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -81,12 +81,10 @@ const clampedAngle = computed(() => {
     position: relative;
 }
 
-
 @keyframes pendulum {
     10% {
         transform: rotate(0deg);
     }
-
 
     11% {
         transform: rotate(-2deg);

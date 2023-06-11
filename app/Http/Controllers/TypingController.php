@@ -22,7 +22,6 @@ class TypingController extends Controller
 
         return Inertia::render('Dashboard', [
             'sentences' => $sentences,
-            'filled' => false,
         ]);
     }
 
@@ -30,7 +29,7 @@ class TypingController extends Controller
     {
         $sentences = Auth::user()->sentences;
 
-        return Inertia::render('Sentence/Show', [
+        return Inertia::render('Sentence/ShowSentence', [
             'sentences' => $sentences,
         ]);
     }
@@ -39,7 +38,7 @@ class TypingController extends Controller
     {
         $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
 
-        return Inertia::render('Preference/Show', [
+        return Inertia::render('Preference/ShowPreference', [
             'sentences' => $sentences,
         ]);
     }
@@ -49,7 +48,7 @@ class TypingController extends Controller
         $sentences = Sentence::with('stat')->where('user_id', Auth::id())->get();
         $user_stats = UserStat::where('user_id', Auth::id())->first();
 
-        return Inertia::render('Stats/Show', [
+        return Inertia::render('Stats/ShowStats', [
             'sentences' => $sentences,
             'userStats' => $user_stats,
         ]);
