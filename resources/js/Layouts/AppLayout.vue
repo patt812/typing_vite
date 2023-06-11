@@ -25,8 +25,19 @@ const switchToTeam = (team) => {
   });
 };
 
+const loggingOut = ref(false);
+
 const logout = () => {
-  router.post(route('logout'));
+  if (loggingOut.value) return;
+  router.post(route('logout'), null, {
+    preserveScroll: true,
+    onStart: () => {
+      loggingOut.value = true;
+    },
+    onFinish: () => {
+      loggingOut.value = false;
+    },
+  });
 };
 </script>
 
