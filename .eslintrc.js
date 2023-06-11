@@ -34,4 +34,13 @@ module.exports = {
       },
     ],
   },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@', './resources/js/'],
+        ],
+      },
+    },
+  },
 };
