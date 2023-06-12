@@ -2,8 +2,13 @@ node_modules
 vendor
 public
 coverage
+bootstrap
 
 resources/js/app.js
 resources/js/bootstrap.js
 tailwind.config.js
 vite.config.js
+composer.json
+composer.lock
+package-lock.json
+readme.md
