@@ -25,15 +25,9 @@ export default class Sentence {
     const kana = [];
     while (chunk.length > 0) {
       let cutLength = 1;
-      if (
-        chunk.length >= 3
-        && Patterns.containsKey(chunk.substring(0, 3))
-      ) {
+      if (chunk.length >= 3 && Patterns.containsKey(chunk.substring(0, 3))) {
         cutLength = 3;
-      } else if (
-        chunk.length >= 2
-        && Patterns.containsKey(chunk.substring(0, 2))
-      ) {
+      } else if (chunk.length >= 2 && Patterns.containsKey(chunk.substring(0, 2))) {
         cutLength = 2;
       }
       kana.push(chunk.substring(0, cutLength));

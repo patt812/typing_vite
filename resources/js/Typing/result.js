@@ -46,8 +46,8 @@ export default class Result {
       this.perfects[i] += 1;
       this.aveWpmPerfects[i] = (this.aveWpmPerfects[i] + wpm) / this.perfects[i];
     } else {
-      this.aveWpmMistakes[i] = (this.aveWpmMistakes[i] + wpm)
-        / (this.finisheds[i] - this.perfects[i]);
+      this.aveWpmMistakes[i] =
+        (this.aveWpmMistakes[i] + wpm) / (this.finisheds[i] - this.perfects[i]);
     }
   }
 }

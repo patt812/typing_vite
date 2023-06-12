@@ -1,30 +1,32 @@
 <script setup>
-import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+  import { Link } from '@inertiajs/vue3';
+  import { computed } from 'vue';
 
-const props = defineProps({
-  active: {
-    type: Boolean,
-    default: false,
-  },
-  href: {
-    type: String,
-    default: null,
-  },
-  as: {
-    type: String,
-    default: null,
-  },
-});
+  const props = defineProps({
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    href: {
+      type: String,
+      default: null,
+    },
+    as: {
+      type: String,
+      default: null,
+    },
+  });
 
-const classes = computed(() => (props.active
-  ? 'block pl-3 pr-4 py-2 border-l- text-base font-medium50 focus:outline-none transition'
-  : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 transition'));
+  const classes = computed(() =>
+    props.active
+      ? 'block pl-3 pr-4 py-2 border-l- text-base font-medium50 focus:outline-none transition'
+      : 'block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 transition'
+  );
 </script>
 
 <template>
   <div>
-    <button v-if="as == 'button'" :class="classes" class="w-full text-left ">
+    <button v-if="as == 'button'" :class="classes" class="w-full text-left">
       <slot />
     </button>
 

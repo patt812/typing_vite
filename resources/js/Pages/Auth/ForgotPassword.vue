@@ -1,26 +1,26 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+  import { Head, Link, useForm } from '@inertiajs/vue3';
+  import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+  import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+  import InputError from '@/Components/InputError.vue';
+  import InputLabel from '@/Components/InputLabel.vue';
+  import PrimaryButton from '@/Components/PrimaryButton.vue';
+  import TextInput from '@/Components/TextInput.vue';
 
-defineProps({
-  status: {
-    type: String,
-    default: null,
-  },
-});
+  defineProps({
+    status: {
+      type: String,
+      default: null,
+    },
+  });
 
-const form = useForm({
-  email: '',
-});
+  const form = useForm({
+    email: '',
+  });
 
-const submit = () => {
-  form.post(route('password.email'));
-};
+  const submit = () => {
+    form.post(route('password.email'));
+  };
 </script>
 
 <template>
@@ -31,9 +31,7 @@ const submit = () => {
       <AuthenticationCardLogo />
     </template>
 
-    <h3 class="text-lg font-bold text-gray-900 pb-4">
-      パスワードのリセット
-    </h3>
+    <h3 class="text-lg font-bold text-gray-900 pb-4">パスワードのリセット</h3>
 
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
       {{ status }}
@@ -43,7 +41,12 @@ const submit = () => {
       <div>
         <InputLabel for="email" value="メールアドレス" />
         <TextInput
-          id="email" v-model="form.email" type="email" class="mt-1 block w-full" required autofocus
+          id="email"
+          v-model="form.email"
+          type="email"
+          class="mt-1 block w-full"
+          required
+          autofocus
           maxlength="255"
         />
         <InputError class="mt-2" :message="form.errors.email" />

@@ -1,59 +1,63 @@
 <script setup>
-import {
-  computed, onMounted, onUnmounted, watch,
-} from 'vue';
+  import { computed, onMounted, onUnmounted, watch } from 'vue';
 
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-  maxWidth: {
-    type: String,
-    default: '2xl',
-  },
-  closeable: {
-    type: Boolean,
-    default: true,
-  },
-});
+  const props = defineProps({
+    show: {
+      type: Boolean,
+      default: false,
+    },
+    maxWidth: {
+      type: String,
+      default: '2xl',
+    },
+    closeable: {
+      type: Boolean,
+      default: true,
+    },
+  });
 
-const emit = defineEmits(['close']);
+  const emit = defineEmits(['close']);
 
-watch(() => props.show, () => {
-  if (props.show) {
-    document.body.style.overflow = 'hidden';
-  } else {
+  watch(
+    () => props.show,
+    () => {
+      if (props.show) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = null;
+      }
+    }
+  );
+
+  const close = () => {
+    if (props.closeable) {
+      emit('close');
+    }
+  };
+
+  const closeOnEscape = (e) => {
+    if (e.key === 'Escape' && props.show) {
+      close();
+    }
+  };
+
+  onMounted(() => document.addEventListener('keydown', closeOnEscape));
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', closeOnEscape);
     document.body.style.overflow = null;
-  }
-});
+  });
 
-const close = () => {
-  if (props.closeable) {
-    emit('close');
-  }
-};
-
-const closeOnEscape = (e) => {
-  if (e.key === 'Escape' && props.show) {
-    close();
-  }
-};
-
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-
-onUnmounted(() => {
-  document.removeEventListener('keydown', closeOnEscape);
-  document.body.style.overflow = null;
-});
-
-const maxWidthClass = computed(() => ({
-  sm: 'sm:max-w-sm',
-  md: 'sm:max-w-md',
-  lg: 'sm:max-w-lg',
-  xl: 'sm:max-w-xl',
-  '2xl': 'sm:max-w-2xl',
-}[props.maxWidth]));
+  const maxWidthClass = computed(
+    () =>
+      ({
+        sm: 'sm:max-w-sm',
+        md: 'sm:max-w-md',
+        lg: 'sm:max-w-lg',
+        xl: 'sm:max-w-xl',
+        '2xl': 'sm:max-w-2xl',
+      }[props.maxWidth])
+  );
 </script>
 
 <template>
@@ -61,7 +65,8 @@ const maxWidthClass = computed(() => ({
     <transition leave-active-class="duration-200">
       <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region>
         <transition
-          enter-active-class="ease-out duration-300" enter-from-class="opacity-0"
+          enter-active-class="ease-out duration-300"
+          enter-from-class="opacity-0"
           enter-to-class="opacity-100"
           leave-active-class="ease-in duration-200"
           leave-from-class="opacity-100"
@@ -82,8 +87,7 @@ const maxWidthClass = computed(() => ({
         >
           <div
             v-show="show"
-            class="border-4 border-black mb-6 p-8 py-10 bg-main rounded-lg overflow-hidden shadow-xl
-             transform transition-all sm:w-full sm:mx-auto"
+            class="border-4 border-black mb-6 p-8 py-10 bg-main rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
             :class="maxWidthClass"
           >
             <slot v-if="show" />

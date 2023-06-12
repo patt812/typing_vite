@@ -45,8 +45,9 @@ export default class Patterns {
       if (key.length === 2) {
         newList[key] = newList[key].concat(this.concatTwo(newList[key[0]], newList[key[1]]));
       } else if (key.length === 3) {
-        newList[key] = newList[key]
-          .concat(this.concatTwo(newList[key[0]], newList[key[1] + key[2]]));
+        newList[key] = newList[key].concat(
+          this.concatTwo(newList[key[0]], newList[key[1] + key[2]])
+        );
         for (const firstchar of newList[key[0]]) {
           for (const secondchar of newList[key[1]]) {
             for (const thirdchar of newList[key[2]]) {
@@ -62,7 +63,9 @@ export default class Patterns {
   static concatTwo(first, second) {
     const result = [];
     for (const firstchar of first) {
-      for (const secondchar of second) { result.push(firstchar + secondchar); }
+      for (const secondchar of second) {
+        result.push(firstchar + secondchar);
+      }
     }
     return result;
   }

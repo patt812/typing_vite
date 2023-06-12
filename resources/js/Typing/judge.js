@@ -11,7 +11,7 @@ export default class Judge {
   do(input, roma) {
     const inputRoma = roma;
     // 「N」を「NN」,「N'」と打てる場合は、正解とする
-    if (this.allowExtra_N && (input === 'N' || input === '\'')) {
+    if (this.allowExtra_N && (input === 'N' || input === "'")) {
       this.allowExtra_N = false;
       this.patternIndex -= 1;
       inputRoma[this.patternIndex] = [`N${input}`];

@@ -1,10 +1,10 @@
 <script setup>
-defineProps({
-  limitSize: {
-    type: Boolean,
-    default: true,
-  },
-});
+  defineProps({
+    limitSize: {
+      type: Boolean,
+      default: true,
+    },
+  });
 </script>
 
 <template>
