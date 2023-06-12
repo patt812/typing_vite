@@ -28,6 +28,13 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        alphabetize: { order: 'asc', caseInsensitive: true },
+      },
+    ],
   },
   settings: {
     'import/resolver': {
