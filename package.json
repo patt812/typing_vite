@@ -1,37 +1,52 @@
 {
-    "private": true,
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "lint": "eslint .",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
     "lint:fix": "eslint --fix './**/*.{js,vue}'",
     "format": "eslint --fix './**/*.{js,vue}' && prettier --write ."
   },
-    },
-    "devDependencies": {
-        "@inertiajs/vue3": "^1.0.0",
-        "@tailwindcss/forms": "^0.5.2",
-        "@tailwindcss/typography": "^0.5.2",
-        "@vitejs/plugin-vue": "^4.0.0",
-        "autoprefixer": "^10.4.7",
-        "axios": "^1.1.2",
-        "eslint": "^8.40.0",
-        "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.8.0",
-        "eslint-import-resolver-alias": "^1.1.2",
-        "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-unused-imports": "^2.0.0",
-        "eslint-plugin-vue": "^9.11.1",
-        "laravel-vite-plugin": "^0.7.2",
-        "lodash": "^4.17.19",
-        "postcss": "^8.4.14",
-    "prettier": "2.8.8",
-        "tailwindcss": "^3.1.0",
-        "vite": "^4.0.0",
-        "vue": "^3.2.31"
-    },
-    "dependencies": {
-        "@inertiajs/inertia": "^0.11.1"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.php": [
+      "vendor/bin/php-cs-fixer --config=.php-cs-fixer.dist.php fix --allow-risky=yes"
+    ],
+    "*.{js,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@inertiajs/vue3": "^1.0.0",
+    "@tailwindcss/forms": "^0.5.2",
+    "@tailwindcss/typography": "^0.5.2",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "autoprefixer": "^10.4.7",
+    "axios": "^1.1.2",
+    "eslint": "^8.40.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "eslint-plugin-vue": "^9.11.1",
+    "husky": "^8.0.3",
+    "laravel-vite-plugin": "^0.7.2",
+    "lint-staged": "^13.2.2",
+    "lodash": "^4.17.19",
+    "postcss": "^8.4.14",
+    "prettier": "2.8.8",
+    "tailwindcss": "^3.1.0",
+    "vite": "^4.0.0",
+    "vue": "^3.2.31"
+  },
+  "dependencies": {
+    "@inertiajs/inertia": "^0.11.1"
+  }
 }
