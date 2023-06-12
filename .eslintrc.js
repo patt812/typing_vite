@@ -3,10 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'plugin:vue/vue3-recommended',
-    'airbnb-base',
-  ],
+  extends: ['plugin:vue/vue3-recommended', 'airbnb-base', 'prettier'],
   globals: {
     route: true,
     axios: true,
@@ -15,10 +12,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: [
-    'vue',
-    'unused-imports',
-  ],
+  plugins: ['vue', 'unused-imports'],
   rules: {
     'import/no-extraneous-dependencies': 'off',
     'unused-imports/no-unused-imports': 'error',
@@ -34,13 +28,18 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        alphabetize: { order: 'asc', caseInsensitive: true },
+      },
+    ],
   },
   settings: {
     'import/resolver': {
       alias: {
-        map: [
-          ['@', './resources/js/'],
-        ],
+        map: [['@', './resources/js/']],
       },
     },
   },

@@ -1,22 +1,22 @@
 <script setup>
-import { computed } from 'vue';
+  import { computed } from 'vue';
 
-const props = defineProps({
-  accuracy: {
-    type: Number,
-    default: 0,
-  },
-});
+  const props = defineProps({
+    accuracy: {
+      type: Number,
+      default: 0,
+    },
+  });
 
-const offset = computed(() => {
-  if (props.accuracy <= 0) {
-    return 251;
-  } if (props.accuracy >= 100) {
-    return 0;
-  }
-  return ((100 - props.accuracy) * 251) / 100;
-});
-
+  const offset = computed(() => {
+    if (props.accuracy <= 0) {
+      return 251;
+    }
+    if (props.accuracy >= 100) {
+      return 0;
+    }
+    return ((100 - props.accuracy) * 251) / 100;
+  });
 </script>
 
 <template>
@@ -30,8 +30,10 @@ const offset = computed(() => {
         <div class="title">
           <span class="!text-2xl">{{ accuracy.toString().split('.')[0] }}</span>
           <span class="!text-sm">
-            {{ accuracy.toString().split('.')[1] ? '.' + accuracy.toString().split('.')[1] :
-              '' }}</span>
+            {{
+              accuracy.toString().split('.')[1] ? '.' + accuracy.toString().split('.')[1] : ''
+            }}</span
+          >
           <span class="!text-sm">%</span>
         </div>
       </div>
@@ -40,7 +42,7 @@ const offset = computed(() => {
 </template>
 
 <style scoped>
-.box {
+  .box {
     position: relative;
     min-width: 100px;
     display: -webkit-box;
@@ -56,17 +58,17 @@ const offset = computed(() => {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-}
+  }
 
-.box .percent svg {
+  .box .percent svg {
     position: relative;
     width: 90px;
     height: 90px;
     -webkit-transform: rotate(-90deg);
     transform: rotate(-90deg);
-}
+  }
 
-.box .percent svg circle {
+  .box .percent svg circle {
     position: relative;
     fill: none;
     stroke-width: 7;
@@ -74,9 +76,9 @@ const offset = computed(() => {
     stroke-dasharray: 251;
     stroke-dashoffset: 0;
     stroke-linecap: round;
-}
+  }
 
-.box .percent .number {
+  .box .percent .number {
     position: absolute;
     top: 0;
     left: 0;
@@ -92,52 +94,52 @@ const offset = computed(() => {
     -ms-flex-pack: center;
     justify-content: center;
     color: #111;
-}
+  }
 
-.box .percent .number .title {
+  .box .percent .number .title {
     font-size: 1.8rem;
-}
+  }
 
-.box .percent .number .title span {
+  .box .percent .number .title span {
     font-size: 1rem;
-}
+  }
 
-.box .text {
+  .box .text {
     padding: 10px 0 0;
     text-align: center;
     font-weight: bold;
     font-size: 14px;
-}
+  }
 
-.box .percent .line {
+  .box .percent .line {
     -webkit-animation: circleAnim 1s forwards;
     animation: circleAnim 1s forwards;
-}
+  }
 
-.box .percent .line {
+  .box .percent .line {
     stroke-dashoffset: 0;
     stroke: #000;
-}
+  }
 
-@-webkit-keyframes circleAnim {
+  @-webkit-keyframes circleAnim {
     0% {
-        stroke-dasharray: 0 251;
+      stroke-dasharray: 0 251;
     }
 
     99.9%,
     to {
-        stroke-dasharray: 251 251;
+      stroke-dasharray: 251 251;
     }
-}
+  }
 
-@keyframes circleAnim {
+  @keyframes circleAnim {
     0% {
-        stroke-dasharray: 0 251;
+      stroke-dasharray: 0 251;
     }
 
     99.9%,
     to {
-        stroke-dasharray: 251 251;
+      stroke-dasharray: 251 251;
     }
-}
+  }
 </style>

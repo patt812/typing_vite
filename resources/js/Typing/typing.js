@@ -1,7 +1,7 @@
-import Statistics from './statistics';
 import Judge from './judge';
-import Sentence from './sentence';
 import Result from './result';
+import Sentence from './sentence';
+import Statistics from './statistics';
 
 export default class Game {
   constructor(settings = {}) {
@@ -88,8 +88,10 @@ export default class Game {
       this.typing.typeSound.play();
     }
 
-    if (this.typing.sentence.sentences.length === this.typing.sentence.current + 1
-      && this.typing.judge.goNext) {
+    if (
+      this.typing.sentence.sentences.length === this.typing.sentence.current + 1 &&
+      this.typing.judge.goNext
+    ) {
       this.typing.statistics.stopTimer();
       this.typing.sentence.current += 1;
       this.typing.updateResult();
@@ -97,7 +99,8 @@ export default class Game {
       this.typing.isPlayable = false;
       this.typing.isFinished = true;
       return;
-    } if (this.typing.judge.goNext) {
+    }
+    if (this.typing.judge.goNext) {
       this.typing.next();
       this.typing.statistics.splitTimer();
       return;
@@ -139,7 +142,7 @@ export default class Game {
         this.sentence.current - 1,
         this.statistics.missStreak,
         this.statistics.currentWPM,
-        this.statistics.accuracy,
+        this.statistics.accuracy
       );
     }
   }
@@ -153,8 +156,7 @@ export default class Game {
   }
 
   isStartKeyInput(input) {
-    const totalInputs = this.statistics.totalCorrect
-      + this.statistics.totalMistake;
+    const totalInputs = this.statistics.totalCorrect + this.statistics.totalMistake;
     return totalInputs === 0 && input === 'Space';
   }
 

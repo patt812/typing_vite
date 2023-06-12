@@ -1,16 +1,17 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+  import { Head } from '@inertiajs/vue3';
+  import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 
-defineProps({
-  policy: {
-    type: String,
-    default: '',
-  },
-});
+  defineProps({
+    policy: {
+      type: String,
+      default: '',
+    },
+  });
 </script>
 
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <Head title="Privacy Policy" />
 
   <div class="font-sans text-gray-900 antialiased">
@@ -20,8 +21,10 @@ defineProps({
           <AuthenticationCardLogo />
         </div>
 
-        <!-- eslint-disable-next-line max-len vue/no-v-html -->
-        <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white shadow-md overflow-hidden sm:rounded-lg prose" v-html="policy" />
+        <div
+          class="w-full sm:max-w-2xl mt-6 p-6 bg-white shadow-md overflow-hidden sm:rounded-lg prose"
+          v-html="policy"
+        />
       </div>
     </div>
   </div>

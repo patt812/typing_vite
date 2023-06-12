@@ -1,35 +1,30 @@
 <script setup>
-import AppModal from './AppModal.vue';
+  import AppModal from './AppModal.vue';
 
-const emit = defineEmits(['close']);
+  const emit = defineEmits(['close']);
 
-defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-  maxWidth: {
-    type: String,
-    default: '2xl',
-  },
-  closeable: {
-    type: Boolean,
-    default: true,
-  },
-});
+  defineProps({
+    show: {
+      type: Boolean,
+      default: false,
+    },
+    maxWidth: {
+      type: String,
+      default: '2xl',
+    },
+    closeable: {
+      type: Boolean,
+      default: true,
+    },
+  });
 
-const close = () => {
-  emit('close');
-};
+  const close = () => {
+    emit('close');
+  };
 </script>
 
 <template>
-  <AppModal
-    :show="show"
-    :max-width="maxWidth"
-    :closeable="closeable"
-    @close="close"
-  >
+  <AppModal :show="show" :max-width="maxWidth" :closeable="closeable" @close="close">
     <div class="px-6 py-4">
       <div class="text-lg">
         <slot name="title" />
