@@ -40,6 +40,11 @@ class HandleInertiaRequests extends Middleware
         $user = Auth::user();
         if ($user) {
             $user->load(['settings.settingPreferences', 'settings.settingPlays']);
+        } elseif ($request->session()->has('guest_data')) {
+            $user = [
+                'id' => null,
+                'name' => 'ゲスト',
+            ];
         }
 
         return array_merge(parent::share($request), [

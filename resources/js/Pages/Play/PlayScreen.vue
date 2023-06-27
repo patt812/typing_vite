@@ -1,27 +1,32 @@
 <script setup>
-  import { usePage } from '@inertiajs/vue3';
   import { ref } from 'vue';
   import PlayTyping from '@/Pages/Play/Partials/PlayTyping.vue';
 
-  defineProps({
+  const props = defineProps({
     sentences: {
       type: Array,
       required: true,
     },
+    settings: {
+      type: Object,
+      default: () => ({
+        volume: 0.5,
+        use_type_sound: true,
+        use_beep_sound: true,
+      }),
+    },
   });
 
-  const settings = usePage().props.user.settings.setting_plays;
+  const volume = ref(props.settings.volume);
 
-  const volume = ref(settings.volume);
-
-  const isMuted = ref(!settings.use_type_sound && !settings.use_beep_sound);
+  const isMuted = ref(!props.settings.use_type_sound && !props.settings.use_beep_sound);
 </script>
 
 <template>
   <label for="sp-input">
     <div>
       <input id="sp-input" class="absolute opacity-0 top-[-1000px] w-1 h-1 z-[-1]" type="text" />
-      <PlayTyping :sentences="sentences" :volume="volume" />
+      <PlayTyping :sentences="sentences" :settings="settings" />
       <div class="flex mt-4 items-end justify-between">
         <div class="flex">
           <img

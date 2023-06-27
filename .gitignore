@@ -23,3 +23,4 @@ yarn-error.log
 !.vscode/extensions.json
 !*.gitkeep
 resources/sentence/template.json
+resources/sentence/guest-template.json

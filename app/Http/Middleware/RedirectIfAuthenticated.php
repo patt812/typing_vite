@@ -26,6 +26,8 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 return redirect(RouteServiceProvider::HOME);
+            } elseif ($request->session()->has('guest_data')) {
+                return redirect(route('guest.dashboard'));
             }
         }
 

@@ -7,6 +7,7 @@
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
+  import SecondaryButton from '@/Components/SecondaryButton.vue';
   import TextInput from '@/Components/TextInput.vue';
 
   defineProps({
@@ -35,6 +36,11 @@
       .post(route('login'), {
         onFinish: () => form.reset('password'),
       });
+  };
+
+  const guestForm = useForm({});
+  const submitAsGuest = () => {
+    guestForm.post(route('guest.login'));
   };
 </script>
 
@@ -87,8 +93,8 @@
 
       <PrimaryButton
         class="mt-3 mb-3 mx-auto"
-        :class="{ 'opacity-25': form.processing }"
-        :disabled="form.processing"
+        :class="{ 'opacity-25': form.processing || guestForm.processing }"
+        :disabled="form.processing || guestForm.processing"
       >
         ログイン
       </PrimaryButton>
@@ -107,6 +113,25 @@
       >
         登録はこちら
       </Link>
+
+      <hr class="hr-class border border-black mt-4 px-10" />
+
+      <SecondaryButton
+        class="mt-4 mx-auto text-center"
+        :class="{ 'opacity-25': form.processing || guestForm.processing }"
+        :disabled="form.processing || guestForm.processing"
+        @click.prevent="submitAsGuest"
+      >
+        ゲストでお試し
+      </SecondaryButton>
     </form>
   </AuthenticationCard>
 </template>
+
+<style scoped>
+  .hr-class {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+</style>

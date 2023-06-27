@@ -1,12 +1,19 @@
 <script setup>
-  import { Head, Link, router } from '@inertiajs/vue3';
+  import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
   import { ref } from 'vue';
-  import ApplicationBanner from '@/Components/ApplicationBanner.vue';
   import ApplicationMark from '@/Components/ApplicationMark.vue';
+  import AppModal from '@/Components/AppModal.vue';
+  import Checkbox from '@/Components/Checkbox.vue';
+  import DangerButton from '@/Components/DangerButton.vue';
   import Dropdown from '@/Components/Dropdown.vue';
   import DropdownLink from '@/Components/DropdownLink.vue';
+  import InputError from '@/Components/InputError.vue';
+  import InputLabel from '@/Components/InputLabel.vue';
   import NavLink from '@/Components/NavLink.vue';
+  import PrimaryButton from '@/Components/PrimaryButton.vue';
   import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+  import SecondaryButton from '@/Components/SecondaryButton.vue';
+  import TextInput from '@/Components/TextInput.vue';
 
   defineProps({
     title: {
@@ -15,7 +22,23 @@
     },
   });
 
+  const guestPrefix = ref(usePage().props.user.id === null ? 'guest.' : '');
+  const form = useForm({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+    take_over: true,
+  });
+  const openLogoutModal = ref(false);
+  const showRegisterModal = ref(false);
+
   const showingNavigationDropdown = ref(false);
+
+  const navigateRegisterModal = () => {
+    openLogoutModal.value = false;
+    showRegisterModal.value = true;
+  };
 
   const switchToTeam = (team) => {
     router.put(
@@ -31,9 +54,13 @@
 
   const loggingOut = ref(false);
 
-  const logout = () => {
+  const logout = (confirmed = false) => {
     if (loggingOut.value) return;
-    router.post(route('logout'), null, {
+    if (guestPrefix.value && !confirmed) {
+      openLogoutModal.value = true;
+      return;
+    }
+    router.post(route(`${guestPrefix.value}logout`), null, {
       preserveScroll: true,
       onStart: () => {
         loggingOut.value = true;
@@ -41,6 +68,12 @@
       onFinish: () => {
         loggingOut.value = false;
       },
+    });
+  };
+
+  const guestRegister = () => {
+    form.post(route('guest.register'), {
+      onFinish: () => form.reset('password', 'password_confirmation'),
     });
   };
 </script>
@@ -60,26 +93,38 @@
               <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                  <Link :href="route('dashboard')">
+                  <Link :href="route(guestPrefix + 'dashboard')">
                     <ApplicationMark class="block h-9 w-auto" />
                   </Link>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                  <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                  <NavLink
+                    :href="route(guestPrefix + 'dashboard')"
+                    :active="route().current(guestPrefix + 'dashboard')"
+                  >
                     測定
                   </NavLink>
 
-                  <NavLink :href="route('preference')" :active="route().current('preference')">
+                  <NavLink
+                    :href="route(guestPrefix + 'preference')"
+                    :active="route().current(guestPrefix + 'preference')"
+                  >
                     出題
                   </NavLink>
 
-                  <NavLink :href="route('sentence')" :active="route().current('sentence')">
+                  <NavLink
+                    :href="route(guestPrefix + 'sentence')"
+                    :active="route().current(guestPrefix + 'sentence')"
+                  >
                     文章
                   </NavLink>
 
-                  <NavLink :href="route('stats')" :active="route().current('stats')">
+                  <NavLink
+                    :href="route(guestPrefix + 'stats')"
+                    :active="route().current(guestPrefix + 'stats')"
+                  >
                     統計
                   </NavLink>
                 </div>
@@ -173,13 +218,17 @@
                 <div class="ml-3 relative">
                   <span class="inline-flex rounded-md">
                     <NavLink
+                      v-if="$page.props.user.id"
                       :href="route('profile.show')"
                       :active="route().current('profile.show')"
                     >
                       {{ $page.props.user.name ? $page.props.user.name : 'アカウント設定' }}
                     </NavLink>
+                    <SecondaryButton v-else @click="showRegisterModal = true">
+                      会員登録
+                    </SecondaryButton>
 
-                    <form @submit.prevent="logout">
+                    <form @submit.prevent="logout(false)">
                       <button
                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium hover:text-gray-700"
                       >
@@ -196,6 +245,9 @@
                   class="inline-flex items-center justify-center p-2 rounded-md text-black focus:outline-none transition"
                   @click="showingNavigationDropdown = !showingNavigationDropdown"
                 >
+                  <SecondaryButton class="mr-4" @click.stop="showRegisterModal = true">
+                    会員登録
+                  </SecondaryButton>
                   <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                     <path
                       :class="{
@@ -229,22 +281,31 @@
             class="sm:hidden"
           >
             <div class="pt-2 pb-3 space-y-1">
-              <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+              <ResponsiveNavLink
+                :href="route(guestPrefix + 'dashboard')"
+                :active="route().current(guestPrefix + 'dashboard')"
+              >
                 測定
               </ResponsiveNavLink>
 
               <ResponsiveNavLink
-                :href="route('preference')"
-                :active="route().current('preference')"
+                :href="route(guestPrefix + 'preference')"
+                :active="route().current(guestPrefix + 'preference')"
               >
                 出題
               </ResponsiveNavLink>
 
-              <ResponsiveNavLink :href="route('sentence')" :active="route().current('sentence')">
+              <ResponsiveNavLink
+                :href="route(guestPrefix + 'sentence')"
+                :active="route().current(guestPrefix + 'sentence')"
+              >
                 文章
               </ResponsiveNavLink>
 
-              <ResponsiveNavLink :href="route('stats')" :active="route().current('stats')">
+              <ResponsiveNavLink
+                :href="route(guestPrefix + 'stats')"
+                :active="route().current(guestPrefix + 'stats')"
+              >
                 統計
               </ResponsiveNavLink>
             </div>
@@ -269,6 +330,7 @@
 
               <div class="mt-3 space-y-1">
                 <ResponsiveNavLink
+                  v-if="$page.props.user.id"
                   :href="route('profile.show')"
                   :active="route().current('profile.show')"
                 >
@@ -284,7 +346,7 @@
                 </ResponsiveNavLink>
 
                 <!-- Authentication -->
-                <form method="POST" @submit.prevent="logout">
+                <form method="POST" @submit.prevent="logout(false)">
                   <ResponsiveNavLink as="button"> ログアウト </ResponsiveNavLink>
                 </form>
 
@@ -361,6 +423,100 @@
           <slot name="header" />
         </div>
       </header>
+
+      <!-- ゲスト時のログアウトモーダル -->
+      <AppModal v-if="openLogoutModal" :show="openLogoutModal" @close="openLogoutModal = false">
+        <div>
+          <div class="font-bold">
+            ログアウトすると、<span class="text-red-600">文章や統計が完全に削除</span
+            >されます。<br />
+            この作業は取り消せません。 <br />
+            ログアウトしますか？
+          </div>
+
+          <div class="flex mt-3 mx-auto gap-12 items-center justify-center">
+            <PrimaryButton :disabled="loggingOut" @click="navigateRegisterModal"
+              >会員登録</PrimaryButton
+            >
+            <DangerButton :disabled="loggingOut" @click="logout(true)">ログアウト</DangerButton>
+          </div>
+        </div>
+      </AppModal>
+
+      <AppModal
+        v-if="showRegisterModal"
+        :show="showRegisterModal"
+        @close="showRegisterModal = false"
+      >
+        <form @submit.prevent="guestRegister">
+          <div>
+            <InputLabel for="name" value="ユーザー名" />
+            <TextInput
+              id="name"
+              v-model="form.name"
+              type="text"
+              class="mt-1 block w-full"
+              required
+              autofocus
+              autocomplete="name"
+              maxlength="255"
+            />
+            <InputError class="mt-2" :message="form.errors.name" />
+          </div>
+
+          <div class="mt-4">
+            <InputLabel for="email" value="メールアドレス" />
+            <TextInput
+              id="email"
+              v-model="form.email"
+              type="email"
+              class="mt-1 block w-full"
+              required
+              maxlength="255"
+            />
+            <InputError class="mt-2" :message="form.errors.email" />
+          </div>
+
+          <div class="mt-4">
+            <InputLabel for="password" value="パスワード" />
+            <TextInput
+              id="password"
+              v-model="form.password"
+              type="password"
+              class="mt-1 block w-full"
+              required
+              autocomplete="new-password"
+            />
+            <InputError class="mt-2" :message="form.errors.password" />
+          </div>
+
+          <div class="mt-4 mb-4">
+            <InputLabel for="password_confirmation" value="パスワード（確認）" />
+            <TextInput
+              id="password_confirmation"
+              v-model="form.password_confirmation"
+              type="password"
+              class="mt-1 block w-full"
+              required
+              autocomplete="new-password"
+            />
+            <InputError class="mt-2" :message="form.errors.password_confirmation" />
+          </div>
+
+          <label class="flex items-center">
+            <Checkbox v-model:checked="form.take_over" name="take_over" dashed="true" />
+            <span class="ml-2 text-sm text-gray-600">文章や統計を引き継ぐ</span>
+          </label>
+
+          <PrimaryButton
+            class="mt-4 mx-auto"
+            :class="{ 'opacity-25': form.processing }"
+            :disabled="form.processing"
+          >
+            登録
+          </PrimaryButton>
+        </form>
+      </AppModal>
 
       <!-- Page Content -->
       <main>
