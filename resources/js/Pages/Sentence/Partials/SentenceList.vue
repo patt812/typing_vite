@@ -37,18 +37,21 @@
 
   const emits = defineEmits('fill');
 
-  const select = (sentence, index) => {
+  const select = (sentenceRow, index) => {
+    const sentence = sentenceRow;
     if (index === selectedIndex.value) {
       selectedIndex.value = null;
       emits('fill', null);
       return;
     }
+    sentence.index = index;
     selectedIndex.value = index;
+
     emits('fill', sentence);
   };
 
   const filtered = computed(() => {
-    let sentence = props.sentences;
+    let sentence = Object.values(props.sentences);
 
     if (radioDiv.value === 1) {
       sentence = sentence.filter((s) => s.is_selected);
@@ -83,7 +86,7 @@
           type="radio"
           class="ml-3"
           name="list-type"
-          value="1"
+          :value="1"
         />
         <InputLabel class="ml-1 pt-0.5" for="list-type-on" value="出題する" />
 
@@ -93,7 +96,7 @@
           type="radio"
           class="ml-3"
           name="list-type"
-          value="2"
+          :value="2"
         />
         <InputLabel class="ml-1 pt-0.5" for="list-type-off" value="出題しない" />
       </div>
@@ -118,7 +121,7 @@
       </div>
 
       <div class="max-h-60 overflow-auto scroll-bar mb-3">
-        <template v-for="(sentence, index) in filtered" :key="sentence.id">
+        <template v-for="(sentence, index) in filtered" :key="sentence">
           <div
             class="flex items-center justify-between cursor-pointer py-1 border-black border-b-2"
             :class="{ 'bg-black text-white': index == selectedIndex }"

@@ -17,19 +17,23 @@
       type: Boolean,
       default: null,
     },
-    volume: {
-      type: Number,
-      default: 0.3,
+    settings: {
+      type: Object,
+      default: () => ({
+        volume: 0.5,
+        use_type_sound: true,
+        use_beep_sound: true,
+      }),
     },
   });
 
-  const settings = usePage().props.user.settings.setting_plays;
+  const guestPrefix = ref(usePage().props.user.id === null ? 'guest.' : '');
 
   const typing = ref(
     new Typing({
       volume: props.volume,
-      use_type_sound: settings.use_type_sound,
-      use_beep_sound: settings.use_beep_sound,
+      use_type_sound: props.settings.use_type_sound,
+      use_beep_sound: props.settings.use_beep_sound,
     })
   );
 
@@ -99,6 +103,13 @@
     typing.value.prepare(props.sentences);
   };
 
+  const isRetrying = ref(false);
+
+  const retryGame = () => {
+    isRetrying.value = true;
+    getSentence(0);
+  };
+
   watch(
     () => typing.value.isFinished,
     (isFinished) => {
@@ -110,7 +121,7 @@
           result,
           stats,
         });
-        form.post(route('play.store'));
+        form.post(route(`${guestPrefix.value}play.store`));
       }
     }
   );
@@ -130,6 +141,12 @@
     document.addEventListener('keydown', {
       handleEvent: typing.value.start,
       typing: typing.value,
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && typing.value.isStarted) {
+        getSentence(0);
+      }
     });
   });
 
@@ -224,7 +241,14 @@
 
         <div class="flex">
           <div>正答率：</div>
-          <div>{{ typing.statistics.accuracy }}%</div>
+          <div>
+            {{
+              typing.statistics.calcAccuracy(
+                typing.statistics.totalCorrect,
+                typing.statistics.totalMistake
+              )
+            }}%
+          </div>
         </div>
 
         <div class="flex">
@@ -248,29 +272,31 @@
         </div>
       </div>
 
-      <div class="scroll-bar max-h-60 overflow-auto">
-        <div
-          v-for="i of typing.sentence.ids.length"
-          :key="i"
-          class="flex cursor-pointer my-2 border-b-2 border-black"
-          @click="getStats(i - 1)"
-        >
-          <div>{{ i }}</div>
-          <div class="ml-2">
-            {{ typing.sentence.sentences[i - 1] }}
+      <div v-show="!isRetrying">
+        <div class="scroll-bar max-h-60 overflow-auto">
+          <div
+            v-for="i of typing.sentence.ids.length"
+            :key="i"
+            class="flex cursor-pointer my-2 border-b-2 border-black"
+            @click="getStats(i - 1)"
+          >
+            <div>{{ i }}</div>
+            <div class="ml-2">
+              {{ typing.sentence.sentences[i - 1] }}
+            </div>
+            <!-- <div @click="getStats(i - 1)">{{ typing.sentence.kanasDisplay[i - 1] }}</div> -->
           </div>
-          <!-- <div @click="getStats(i - 1)">{{ typing.sentence.kanasDisplay[i - 1] }}</div> -->
         </div>
-      </div>
 
-      <div v-if="stat" class="text-center mt-3">
-        <div>WPM：{{ stat.wpm }}</div>
-        <div>正答率：{{ stat.average }}%</div>
-        <div>連続ミス数：{{ stat.missStreak }}</div>
-      </div>
+        <div v-if="stat" class="text-center mt-3">
+          <div>WPM：{{ stat.wpm }}</div>
+          <div>正答率：{{ stat.average }}%</div>
+          <div>連続ミス数：{{ stat.missStreak }}</div>
+        </div>
 
-      <div class="flex justify-center mt-3">
-        <SecondaryButton @click="getSentence(0)"> もう一度 </SecondaryButton>
+        <div class="flex justify-center mt-3">
+          <SecondaryButton @click="retryGame"> もう一度 </SecondaryButton>
+        </div>
       </div>
     </div>
   </div>

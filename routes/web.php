@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TypingController;
 use Illuminate\Foundation\Application;
@@ -48,4 +49,24 @@ Route::middleware([
         ->name('settings.sound');
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('trial')->name('guest.')->prefix('guest')->group(function () {
+    Route::post('/login', [GuestController::class, 'login'])
+        ->withoutMiddleware('trial')->name('login');
+    Route::post('/logout', [GuestController::class, 'logout'])->name('logout');
+    Route::post('/register', [GuestController::class, 'register'])->name('register');
+
+    Route::get('/', [GuestController::class, 'show'])->name('dashboard');
+    Route::get('/sentence', [GuestController::class, 'showSentence'])->name('sentence');
+    Route::get('/sentences', [GuestController::class, 'getSentences'])->name('sentences');
+    Route::get('/preference', [GuestController::class, 'showPreference'])->name('preference');
+    Route::get('/stats', [GuestController::class, 'showStats'])->name('stats');
+
+    Route::post('/result/store', [GuestController::class, 'storeResult'])->name('play.store');
+    Route::put('/sentence/store', [GuestController::class, 'storeSentence'])->name('sentence.store');
+    Route::post('/sentences/store', [GuestController::class, 'storeSentences'])->name('sentences.store');
+    Route::put('/sentence/update', [GuestController::class, 'updateSentence'])->name('sentence.update');
+    Route::delete('/sentence/delete', [GuestController::class, 'deleteSentence'])->name('sentence.delete');
+    Route::delete('/stats/reset/{sentence_id}', [GuestController::class, 'resetStat'])->name('stats.reset');
 });

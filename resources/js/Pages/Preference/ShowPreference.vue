@@ -25,7 +25,7 @@
     },
   });
 
-  const form = useForm(user.settings.setting_preferences);
+  const form = useForm(user.id ? user.settings.setting_preferences : {});
 
   const error = ref('');
 
@@ -56,7 +56,7 @@
   <AppLayout>
     <Head title="出題設定" />
 
-    <ContentFrame>
+    <ContentFrame :is-guest="$page.props.user.id === null">
       <template #title> 出題設定 </template>
 
       <template #content>

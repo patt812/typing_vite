@@ -1,5 +1,5 @@
 <script setup>
-  import { Head, useForm } from '@inertiajs/vue3';
+  import { Head, useForm, usePage } from '@inertiajs/vue3';
   import { computed, ref } from 'vue';
   import AppModal from '@/Components/AppModal.vue';
   import Checkbox from '@/Components/Checkbox.vue';
@@ -16,9 +16,18 @@
     },
     userStats: {
       type: Object,
-      required: true,
+      default: () => ({
+        wpm: 0,
+        max_wpm: 0,
+        accuracy: 0,
+        typed: 0,
+        played: 0,
+        played_seconds: 0,
+      }),
     },
   });
+
+  const guestPrefix = ref(usePage().props.user.id === null ? 'guest.' : '');
 
   const selected = ref(null);
 
@@ -48,13 +57,16 @@
     const form = useForm({
       delete_sentence: deleteWithSentence.value,
     });
-    form.delete(route('stats.reset', selected.value.id), {
-      onSuccess: () => {
-        selected.value = null;
-        resetConfirm.value = false;
-        deleteWithSentence.value = false;
-      },
-    });
+    form.delete(
+      route(`${guestPrefix.value}stats.reset`, selected.value.id ?? selected.value.index),
+      {
+        onSuccess: () => {
+          selected.value = null;
+          resetConfirm.value = false;
+          deleteWithSentence.value = false;
+        },
+      }
+    );
   };
 
   const resetAll = () => {
@@ -82,7 +94,7 @@
           <SentenceList :sentences="sentences" :from="'stats'" :focus-input="true" @fill="fill" />
 
           <div v-if="selected" class="text-center mt-4">
-            <div v-if="selected.stat">
+            <div v-if="selected.stat && selected.stat.played">
               <div class="mb-1">プレイ数：{{ selected.stat.played }}</div>
               <div class="mb-1">パーフェクト数：{{ selected.stat.perfect }}</div>
               <div class="mb-1">最低WPM：{{ selected.stat.min_wpm }}</div>
@@ -104,21 +116,26 @@
       </template>
     </ContentFrame>
 
-    <ContentFrame>
+    <ContentFrame :is-guest="$page.props.user.id === null">
       <template #title> 総合統計 </template>
 
       <template #content>
         <div class="text-center mb-4">
-          <div class="mt-1">WPM：{{ userStats.wpm.toFixed(2).replace('.00', '') }}</div>
-          <div class="mt-1">最高WPM：{{ userStats.max_wpm }}</div>
-          <div class="mt-1">正答率：{{ userStats.accuracy.toFixed(2).replace('.00', '') }}%</div>
-          <div class="mt-1">打鍵数：{{ userStats.typed }}</div>
-          <div class="mt-1">プレイ回数：{{ userStats.played }}</div>
-          <div class="mt-1">プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
+          <div class="mt-2">WPM：{{ userStats.wpm.toFixed(2).replace('.00', '') }}</div>
+          <div class="mt-2">最高WPM：{{ userStats.max_wpm }}</div>
+          <div class="mt-2">正答率：{{ userStats.accuracy.toFixed(2).replace('.00', '') }}%</div>
+          <div class="mt-2">打鍵数：{{ userStats.typed }}</div>
+          <div class="mt-2">プレイ回数：{{ userStats.played }}</div>
+          <div class="mt-2">プレイ時間：{{ formatSeconds(userStats.played_seconds) }}</div>
         </div>
       </template>
     </ContentFrame>
-    <DangerButton class="mt-10 mx-auto shadow-xl" @click="resetAllConfirm = true">
+
+    <DangerButton
+      class="mt-10 mx-auto shadow-xl"
+      :disabled="$page.props.user.id === null"
+      @click="resetAllConfirm = true"
+    >
       すべての統計をリセット
     </DangerButton>
 
@@ -130,7 +147,7 @@
         <div class="mt-5 text-center font-bold">
           {{ selected.sentence }}
         </div>
-        <div class="flex justify-center items-center align-middle mt-4">
+        <div v-if="sentences.length > 1" class="flex justify-center items-center align-middle mt-4">
           <Checkbox id="delete_sentence" v-model:checked="deleteWithSentence" :dashed="true" />
           <InputLabel for="delete_sentence" class="ml-2 !text-red-600 font-bold">
             文章も削除する

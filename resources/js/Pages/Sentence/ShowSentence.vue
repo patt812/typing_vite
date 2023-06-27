@@ -1,12 +1,13 @@
 <script setup>
-  import { Head, useForm } from '@inertiajs/vue3';
+  import { Head, useForm, usePage } from '@inertiajs/vue3';
   import { computed, onMounted, ref } from 'vue';
+  import AppModal from '@/Components/AppModal.vue';
+  import Checkbox from '@/Components/Checkbox.vue';
   import ContentFrame from '@/Components/ContentFrame.vue';
   import DangerButton from '@/Components/DangerButton.vue';
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
-
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import TextInput from '@/Components/TextInput.vue';
   import AppLayout from '@/Layouts/AppLayout.vue';
@@ -22,6 +23,7 @@
       required: true,
     },
   });
+  const guestPrefix = ref(usePage().props.user.id === null ? 'guest.' : '');
 
   const sentence = ref(null);
 
@@ -42,6 +44,7 @@
     id: null,
     sentence: '',
     kana: '',
+    index: null,
   });
 
   // const updateForm = useForm({
@@ -60,18 +63,18 @@
 
   const submit = () => {
     if (isInsert.value) {
-      form.put(route('sentence.store'), {
+      form.put(route(`${guestPrefix.value}sentence.store`), {
         onSuccess: () => {
           form.reset();
         },
       });
     } else {
-      form.put(route('sentence.update'));
+      form.put(route(`${guestPrefix.value}sentence.update`));
     }
   };
 
   const erase = () => {
-    form.delete(route('sentence.delete'), {
+    form.delete(route(`${guestPrefix.value}sentence.delete`), {
       onSuccess: () => {
         form.reset();
       },
@@ -137,7 +140,7 @@
   };
 
   const onFill = (fillSentence) => {
-    if (!fillSentence || fillSentence.id === form.id) {
+    if (!fillSentence || (!guestPrefix.value && fillSentence.id === form.id)) {
       form.reset();
       isInsert.value = true;
       return;
@@ -145,7 +148,24 @@
     form.id = fillSentence.id;
     form.sentence = fillSentence.sentence;
     form.kana = fillSentence.kana;
+    form.index = fillSentence.index;
     isInsert.value = false;
+  };
+
+  const showRegisterModal = ref(false);
+
+  const guestRegisterForm = useForm({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+    take_over: true,
+  });
+
+  const submitGuestRegister = () => {
+    guestRegisterForm.post(route('guest.register'), {
+      onFinish: () => form.reset('password', 'password_confirmation'),
+    });
   };
 </script>
 
@@ -185,25 +205,62 @@
             </div>
 
             <div class="w-full mt-6 flex align-middle items-center justify-center">
-              <PrimaryButton :disabled="isSentenceAndKanaFilled">
+              <PrimaryButton
+                :disabled="
+                  form.processing ||
+                  isSentenceAndKanaFilled ||
+                  ($page.props.user.id === null && sentences.length >= 10 && isInsert)
+                "
+              >
                 {{ isInsert ? '登録' : '更新' }}
               </PrimaryButton>
-              <DangerButton class="ml-16" :disabled="!form.id" @click.prevent="erase">
+              <DangerButton
+                class="ml-16"
+                :disabled="
+                  form.processing ||
+                  sentences.length <= 1 ||
+                  ($page.props.user.id && !form.id) ||
+                  (!$page.props.user.id && form.index === null)
+                "
+                @click.prevent="erase"
+              >
                 削除
               </DangerButton>
             </div>
           </form>
+
+          <div
+            v-if="$page.props.user.id === null && sentences.length >= 10"
+            class="mt-6 text-center"
+          >
+            <div>
+              ゲストが登録できる文章は、10件までです。<br />
+              文章や統計をそのまま引き継いで登録できます。
+            </div>
+            <PrimaryButton class="mt-2 mx-auto" @click="showRegisterModal = true"
+              >会員登録</PrimaryButton
+            >
+          </div>
+
+          <InputError
+            v-if="sentences.length <= 1"
+            class="mt-4 text-center"
+            message="登録した文章が１つのみの場合は、削除できません"
+          />
         </template>
       </ContentFrame>
 
-      <ContentFrame>
+      <ContentFrame :is-guest="$page.props.user.id === null">
         <template #title> 一括登録 </template>
 
         <template #content>
           <div class="mt-1">文章とかなが入力されていない行は登録時に自動削除されます。</div>
           <div class="mt-1">Shift + Enterでも登録できます。</div>
-          <SecondaryButton class="mt-3" @click="appendInserts(1)"> +1 </SecondaryButton>
-          <SecondaryButton class="ml-3" @click="appendInserts(5)"> +5 </SecondaryButton>
+
+          <div class="flex mt-3">
+            <SecondaryButton @click="appendInserts(1)"> +1 </SecondaryButton>
+            <SecondaryButton class="ml-3" @click="appendInserts(5)"> +5 </SecondaryButton>
+          </div>
 
           <form @submit.prevent="">
             <div class="w-full flex my-2 border-b-2 border-black">
@@ -320,5 +377,80 @@
         </template>
       </ContentFrame>
     </div>
+
+    <AppModal v-if="showRegisterModal" :show="showRegisterModal" @close="showRegisterModal = false">
+      <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        {{ status }}
+      </div>
+
+      <form @submit.prevent="submitGuestRegister">
+        <div>
+          <InputLabel for="name" value="ユーザー名" />
+          <TextInput
+            id="name"
+            v-model="guestRegisterForm.name"
+            type="text"
+            class="mt-1 block w-full"
+            required
+            autofocus
+            autocomplete="name"
+            maxlength="255"
+          />
+          <InputError class="mt-2" :message="guestRegisterForm.errors.name" />
+        </div>
+
+        <div class="mt-4">
+          <InputLabel for="email" value="メールアドレス" />
+          <TextInput
+            id="email"
+            v-model="guestRegisterForm.email"
+            type="email"
+            class="mt-1 block w-full"
+            required
+            maxlength="255"
+          />
+          <InputError class="mt-2" :message="guestRegisterForm.errors.email" />
+        </div>
+
+        <div class="mt-4">
+          <InputLabel for="password" value="パスワード" />
+          <TextInput
+            id="password"
+            v-model="guestRegisterForm.password"
+            type="password"
+            class="mt-1 block w-full"
+            required
+            autocomplete="new-password"
+          />
+          <InputError class="mt-2" :message="guestRegisterForm.errors.password" />
+        </div>
+
+        <div class="mt-4 mb-4">
+          <InputLabel for="password_confirmation" value="パスワード（確認）" />
+          <TextInput
+            id="password_confirmation"
+            v-model="guestRegisterForm.password_confirmation"
+            type="password"
+            class="mt-1 block w-full"
+            required
+            autocomplete="new-password"
+          />
+          <InputError class="mt-2" :message="guestRegisterForm.errors.password_confirmation" />
+        </div>
+
+        <label class="flex items-center">
+          <Checkbox v-model:checked="guestRegisterForm.take_over" name="take_over" dashed="true" />
+          <span class="ml-2 text-sm text-gray-600">文章や統計を引き継ぐ</span>
+        </label>
+
+        <PrimaryButton
+          class="mt-4 mx-auto"
+          :class="{ 'opacity-25': guestRegisterForm.processing }"
+          :disabled="guestRegisterForm.processing"
+        >
+          登録
+        </PrimaryButton>
+      </form>
+    </AppModal>
   </AppLayout>
 </template>
