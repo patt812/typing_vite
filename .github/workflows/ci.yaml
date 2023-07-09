@@ -1,0 +1,134 @@
+name: Laravel Inertia Lint and Test
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: ['main', 'dev']
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: gmp gmp-dev bc-math
+
+      - uses: actions/setup-node@v3
+        id: setup_node_id
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Npm cache check
+        run: echo '${{ toJSON(steps.setup_node_id.outputs) }}'
+
+      - if: ${{ steps.setup_node_id.outputs.cache-hit != 'true' }}
+        run: npm install
+      - run: npm ci
+
+      - name: Cache Composer packages
+        id: composer_cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        if: ${{ steps.composer_cache.outputs.cache-hit != 'true' }}
+        run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
+
+      - name: Copy Requirements
+        run: |
+          cp resources/js/Typing/romaPatterns.js.example resources/js/Typing/romaPatterns.js
+          cp resources/sentence/template.json.example resources/sentence/template.json
+          cp resources/sentence/guest-template.json.example resources/sentence/guest-template.json
+
+      - name: Check Frontend Lint
+        run: npm run lint
+
+      - name: Check Backend Lint
+        run: composer run lint
+
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0.19
+        ports:
+          - 3306:3306
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: gmp gmp-dev bc-math
+
+      - uses: actions/setup-node@v3
+        id: setup_node_id
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Npm cache check
+        run: echo '${{ toJSON(steps.setup_node_id.outputs) }}'
+
+      - if: ${{ steps.setup_node_id.outputs.cache-hit != 'true' }}
+        run: npm install
+      - run: npm ci
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Copy Requirements
+        run: |
+          cp resources/js/Typing/romaPatterns.js.example resources/js/Typing/romaPatterns.js
+          cp resources/sentence/template.json.example resources/sentence/template.json
+          cp resources/sentence/guest-template.json.example resources/sentence/guest-template.json
+
+      - name: Cache Composer packages
+        id: composer_cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        if: ${{ steps.composer_cache.outputs.cache-hit != 'true' }}
+        run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: DB Migration
+        run: php artisan migrate
+
+      - name: Build assets
+        run: npm run build
+
+      - name: DB Seeding Test
+        run: php artisan db:seed
+
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        run: composer run test
