@@ -2,7 +2,7 @@ name: Laravel Inertia Lint and Test
 
 on:
   push:
-    branches: ['*']
+    branches: '*'
   pull_request:
     branches: ['main', 'dev']
 
@@ -52,6 +52,14 @@ jobs:
 
       - name: Check Frontend Lint
         run: npm run lint
+
+      - name: Cache PHP CS Fixer
+        uses: actions/cache@v2
+        with:
+          path: .php-cs-fixer.cache
+          key: ${{ runner.os }}-php-cs-fixer-${{ hashFiles('**/.php-cs-fixer.dist.php') }}
+          restore-keys: |
+            ${{ runner.os }}-php-cs-fixer-
 
       - name: Check Backend Lint
         run: composer run lint
