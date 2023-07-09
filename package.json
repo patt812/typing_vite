@@ -14,7 +14,8 @@
   },
   "lint-staged": {
     "*.php": [
-      "vendor/bin/php-cs-fixer --config=.php-cs-fixer.php fix --allow-risky=yes"
+      "vendor/bin/php-cs-fixer --config=.php-cs-fixer.php fix --allow-risky=yes",
+      "vendor/bin/phpcs --standard=phpcs.xml --encoding=utf-8 -p -s -v -n ."
     ],
     "*.{js,vue}": [
       "eslint --fix",
