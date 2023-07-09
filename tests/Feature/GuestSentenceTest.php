@@ -181,14 +181,20 @@ class GuestSentenceTest extends TestCase
         $response->assertStatus(200);
 
         $guestData = Session::get('guest_data');
-        $this->assertEquals(self::MOCKED_SESSION['guest_data']['sentence'][0]['stat'], $guestData['sentence'][0]['stat']);
+        $this->assertEquals(
+            self::MOCKED_SESSION['guest_data']['sentence'][0]['stat'],
+            $guestData['sentence'][0]['stat'],
+        );
     }
 
     public function test_can_delete_sentence_with_delete_flag()
     {
         $sentenceIndex = 0;
 
-        $response = $this->deleteJson(route('guest.stats.reset', ['sentence_id' => $sentenceIndex]), ['delete_sentence' => true]);
+        $response = $this->deleteJson(route(
+            'guest.stats.reset',
+            ['sentence_id' => $sentenceIndex],
+        ), ['delete_sentence' => true]);
 
         $response->assertStatus(200);
 
