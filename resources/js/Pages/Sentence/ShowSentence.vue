@@ -1,6 +1,6 @@
 <script setup>
   import { Head, useForm, usePage } from '@inertiajs/vue3';
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, onMounted, ref, nextTick } from 'vue';
   import AppModal from '@/Components/AppModal.vue';
   import Checkbox from '@/Components/Checkbox.vue';
   import ContentFrame from '@/Components/ContentFrame.vue';
@@ -36,9 +36,111 @@
   });
   const inserts = ref(Array.from({ length: 10 }, () => ({ ...insertTemplate.value })));
 
+  const checkInserts = () => {
+    const kanaList = props.sentences.map((storeSentence) => storeSentence.kana);
+    let isValid = true;
+    for (let i = 0; i < inserts.value.length; i += 1) {
+      const row = inserts.value[i];
+      if (!row.kana && !row.sentence) {
+        inserts.value.splice(i, 1);
+        i -= 1;
+        continue;
+      }
+      if (row.kana && kanaList.includes(row.kana)) {
+        inserts.value[i].error = '入力したかなは既に登録されているか、重複しています。';
+        isValid = false;
+        continue;
+      } else {
+        kanaList.push(row.kana);
+      }
+
+      if (!row.sentence) {
+        inserts.value[i].error = '文章は入力必須です。';
+        isValid = false;
+        continue;
+      }
+      if (!row.kana) {
+        inserts.value[i].error = 'かなは入力必須です。';
+        isValid = false;
+        continue;
+      }
+      const invalidChars = new Set(row.kana.match(/[^ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～\d]/g));
+      if (invalidChars.size) {
+        inserts.value[i].error = `かなに使用できない文字が含まれています：${Array.from(
+          invalidChars
+        ).join(',')}`;
+        isValid = false;
+      } else {
+        inserts.value[i].error = '';
+      }
+    }
+    return isValid;
+  };
+
   onMounted(() => {
     sentence.value.focus();
   });
+
+  const fileInput = ref(null);
+  const openCSVFileInput = () => {
+    nextTick(() => {
+      fileInput.value.click();
+    });
+  };
+
+  const resetConfirm = ref(false);
+  const tempCSVData = ref(null);
+
+  const parseCSV = (contents) => {
+    const newInserts = [];
+    const lines = contents.split('\n').filter((line) => line.trim());
+
+    lines.forEach((line) => {
+      let csvSentence = '';
+      let csvKana = '';
+      const cells = line.split(',');
+      if (cells.length === 2) {
+        csvSentence = cells[0].replace(/^["']|["']$/g, '').trim();
+        csvKana = cells[1].replace(/^["']|["']$/g, '').trim();
+      }
+
+      newInserts.push({ sentence: csvSentence, kana: csvKana, error: '' });
+    });
+    return newInserts;
+  };
+
+  const readCSV = (event) => {
+    const input = event.target;
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const contents = e.target.result;
+        const newInserts = parseCSV(contents);
+        // 既存の入力があるか確認
+        if (inserts.value.some((item) => item.sentence || item.kana)) {
+          resetConfirm.value = true;
+          // 一時的にCSVデータを保存
+          tempCSVData.value = newInserts;
+        } else {
+          // 既存の入力がない場合はそのまま反映
+          inserts.value = newInserts;
+          checkInserts();
+        }
+      };
+      reader.readAsText(file);
+    }
+    input.value = null;
+  };
+
+  const resetAndLoadCSV = () => {
+    if (tempCSVData.value) {
+      inserts.value = tempCSVData.value;
+      tempCSVData.value = null;
+      checkInserts();
+    }
+    resetConfirm.value = false;
+  };
 
   const form = useForm({
     id: null,
@@ -84,48 +186,11 @@
   const processingBulkStore = ref(false);
 
   const bulkStore = () => {
-    const kanaList = props.sentences.map((storeSentence) => storeSentence.kana);
-    let isValid = true;
-    for (let i = 0; i < inserts.value.length; i += 1) {
-      const row = inserts.value[i];
-      if (!row.kana && !row.sentence) {
-        inserts.value.splice(i, 1);
-        i -= 1;
-        continue;
-      }
-      if (row.kana && kanaList.includes(row.kana)) {
-        inserts.value[i].error = '入力したかなは既に登録されているか、重複しています。';
-        isValid = false;
-        continue;
-      } else {
-        kanaList.push(row.kana);
-      }
-
-      if (!row.sentence) {
-        inserts.value[i].error = '文章は入力必須です。';
-        isValid = false;
-        continue;
-      }
-      if (!row.kana) {
-        inserts.value[i].error = 'かなは入力必須です。';
-        isValid = false;
-        continue;
-      }
-      const invalidChars = new Set(row.kana.match(/[^ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～\d]/g));
-      if (invalidChars.size) {
-        inserts.value[i].error = `かなに使用できない文字が含まれています：${Array.from(
-          invalidChars
-        ).join(',')}`;
-        isValid = false;
-      } else {
-        inserts.value[i].error = '';
-      }
-    }
+    if (!checkInserts()) return;
     if (!inserts.value.length) {
       appendInserts(10);
       return;
     }
-    if (!isValid) return;
 
     const bulkStoreData = useForm({ sentences: inserts.value });
     processingBulkStore.value = true;
@@ -260,6 +325,8 @@
           <div class="flex mt-3">
             <SecondaryButton @click="appendInserts(1)"> +1 </SecondaryButton>
             <SecondaryButton class="ml-3" @click="appendInserts(5)"> +5 </SecondaryButton>
+            <SecondaryButton class="ml-3" @click="openCSVFileInput">CSV読込</SecondaryButton>
+            <input ref="fileInput" type="file" accept=".csv" class="hidden" @change="readCSV" />
           </div>
 
           <form @submit.prevent="">
@@ -377,6 +444,19 @@
         </template>
       </ContentFrame>
     </div>
+
+    <AppModal v-if="resetConfirm" :show="resetConfirm" @close="resetConfirm = false">
+      <div class="mb-4 text-lg font-bold">CSVインポートの確認</div>
+      <div>
+        <p>CSVを読み込むと、既存の入力内容が上書きされます。</p>
+        <p>このままCSVを読み込みますか？</p>
+
+        <div class="mt-7 flex justify-center">
+          <SecondaryButton @click="resetConfirm = false"> 戻る </SecondaryButton>
+          <DangerButton class="ml-10" @click="resetAndLoadCSV">リセットする</DangerButton>
+        </div>
+      </div>
+    </AppModal>
 
     <AppModal v-if="showRegisterModal" :show="showRegisterModal" @close="showRegisterModal = false">
       <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
