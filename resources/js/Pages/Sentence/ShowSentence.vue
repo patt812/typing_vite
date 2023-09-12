@@ -36,6 +36,47 @@
   });
   const inserts = ref(Array.from({ length: 10 }, () => ({ ...insertTemplate.value })));
 
+  const checkInserts = () => {
+    const kanaList = props.sentences.map((storeSentence) => storeSentence.kana);
+    let isValid = true;
+    for (let i = 0; i < inserts.value.length; i += 1) {
+      const row = inserts.value[i];
+      if (!row.kana && !row.sentence) {
+        inserts.value.splice(i, 1);
+        i -= 1;
+        continue;
+      }
+      if (row.kana && kanaList.includes(row.kana)) {
+        inserts.value[i].error = '入力したかなは既に登録されているか、重複しています。';
+        isValid = false;
+        continue;
+      } else {
+        kanaList.push(row.kana);
+      }
+
+      if (!row.sentence) {
+        inserts.value[i].error = '文章は入力必須です。';
+        isValid = false;
+        continue;
+      }
+      if (!row.kana) {
+        inserts.value[i].error = 'かなは入力必須です。';
+        isValid = false;
+        continue;
+      }
+      const invalidChars = new Set(row.kana.match(/[^ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～\d]/g));
+      if (invalidChars.size) {
+        inserts.value[i].error = `かなに使用できない文字が含まれています：${Array.from(
+          invalidChars
+        ).join(',')}`;
+        isValid = false;
+      } else {
+        inserts.value[i].error = '';
+      }
+    }
+    return isValid;
+  };
+
   onMounted(() => {
     sentence.value.focus();
   });
@@ -84,6 +125,7 @@
         } else {
           // 既存の入力がない場合はそのまま反映
           inserts.value = newInserts;
+          checkInserts();
         }
       };
       reader.readAsText(file);
@@ -95,6 +137,7 @@
     if (tempCSVData.value) {
       inserts.value = tempCSVData.value;
       tempCSVData.value = null;
+      checkInserts();
     }
     resetConfirm.value = false;
   };
@@ -143,48 +186,11 @@
   const processingBulkStore = ref(false);
 
   const bulkStore = () => {
-    const kanaList = props.sentences.map((storeSentence) => storeSentence.kana);
-    let isValid = true;
-    for (let i = 0; i < inserts.value.length; i += 1) {
-      const row = inserts.value[i];
-      if (!row.kana && !row.sentence) {
-        inserts.value.splice(i, 1);
-        i -= 1;
-        continue;
-      }
-      if (row.kana && kanaList.includes(row.kana)) {
-        inserts.value[i].error = '入力したかなは既に登録されているか、重複しています。';
-        isValid = false;
-        continue;
-      } else {
-        kanaList.push(row.kana);
-      }
-
-      if (!row.sentence) {
-        inserts.value[i].error = '文章は入力必須です。';
-        isValid = false;
-        continue;
-      }
-      if (!row.kana) {
-        inserts.value[i].error = 'かなは入力必須です。';
-        isValid = false;
-        continue;
-      }
-      const invalidChars = new Set(row.kana.match(/[^ぁ-ゞァ-ヾ！-／：-＠［-｀｛-～\d]/g));
-      if (invalidChars.size) {
-        inserts.value[i].error = `かなに使用できない文字が含まれています：${Array.from(
-          invalidChars
-        ).join(',')}`;
-        isValid = false;
-      } else {
-        inserts.value[i].error = '';
-      }
-    }
+    if (!checkInserts()) return;
     if (!inserts.value.length) {
       appendInserts(10);
       return;
     }
-    if (!isValid) return;
 
     const bulkStoreData = useForm({ sentences: inserts.value });
     processingBulkStore.value = true;
