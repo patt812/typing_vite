@@ -19,7 +19,7 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
-        @if (app()->environment('local'))
+        @if (app()->environment('local') && file_exists(public_path('css/app.css')))
             <link rel="stylesheet" href="{{ mix('css/app.css') }}">
         @else
             <link rel="stylesheet" href="css/app.css">
