@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-  import { Head, Link, useForm } from '@inertiajs/vue3';
+  import { Head, Link, router, useForm } from '@inertiajs/vue3';
   import AuthenticationCard from '@/Components/AuthenticationCard.vue';
   import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
   import Checkbox from '@/Components/Checkbox.vue';
@@ -34,7 +34,13 @@
         remember: form.remember ? 'on' : '',
       }))
       .post(route('login'), {
-        onFinish: () => form.reset('password'),
+        onFinish: () => {
+          if (form.errors.email) {
+            form.reset('password');
+          } else {
+            router.get(route('dashboard'));
+          }
+        },
       });
   };
 
